@@ -212,8 +212,8 @@ VIDEO_MODELS: Dict[str, Dict[str, Any]] = {
     },
     "ltx-video-uncensored": {
         "name": "LTX-Video-Uncensored",
-        "space": "Lightricks/LTX-Video",
-        "desc": "LTX Video uncensored (NSFW capable)",
+        "space": "alexnasa/ltx-2-TURBO",
+        "desc": "LTX Video Turbo - fast generation (NSFW capable)",
         "uncensored": True,
     },
 }
