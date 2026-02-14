@@ -182,6 +182,30 @@
             background: rgba(239, 68, 68, 0.1);
         }
         
+        /* GPU Badge with rotating text */
+        .gpu-badge {
+            min-width: 120px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .gpu-badge.active {
+            border-color: var(--gold-primary) !important;
+            color: var(--gold-light) !important;
+            background: rgba(212, 175, 55, 0.15);
+            animation: gpuPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes gpuPulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(212, 175, 55, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.6); }
+        }
+        
+        .gpu-text-rotate {
+            display: inline-block;
+            transition: opacity 0.3s ease;
+        }
+        
         /* GPU Panel Modal */
         .modal-overlay {
             position: fixed;
@@ -821,7 +845,9 @@
         </nav>
         <div class="header-right">
             <div class="badge" onclick="activateOllama()" id="ollama-badge" style="border-color:#ff6b00;color:#ff6b00">🦙 OLLAMA</div>
-            <div class="badge" onclick="openGpuModal()">⚡ SCALE GPU</div>
+            <div class="badge gpu-badge" onclick="openGpuModal()" id="gpu-badge">
+                <span class="gpu-text-rotate" id="gpu-text">⚡ SCALE GPU</span>
+            </div>
             <div class="badge" style="border-color:#666;color:#888">💾 BERYL</div>
             <div class="badge" id="status-badge" style="border-color:#22c55e;color:#22c55e">● ONLINE</div>
         </div>
@@ -1083,6 +1109,29 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
             document.querySelector(`[data-gpu="${gpu}"]`).classList.add('selected');
         }
         
+        // ==================== GPU TRACKING & ROTATING DISPLAY ====================
+        let currentGpuTier = 'zero';
+        let currentGpuPrice = 0;
+        let totalSpent = 0;
+        let gpuStartTime = null;
+        let gpuRotateInterval = null;
+        
+        const GPU_PRICING = {
+            'zero': 0,
+            't4': 0.45,
+            'l4': 0.80,
+            'a10g': 1.20,
+            'a100': 4.50
+        };
+        
+        const GPU_NAMES = {
+            'zero': 'Zero GPU',
+            't4': 'T4',
+            'l4': 'L4',
+            'a10g': 'A10G',
+            'a100': 'A100'
+        };
+        
         async function applyGpu() {
             showToast('info', 'GPU Scaling', `Upgrading to ${selectedGpu.toUpperCase()}...`);
             
@@ -1099,13 +1148,77 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                 
                 const data = await response.json();
                 if (data.success) {
-                    showToast('success', 'GPU Upgraded', `Now running on ${selectedGpu.toUpperCase()}`);
+                    // Update GPU state
+                    currentGpuTier = selectedGpu;
+                    currentGpuPrice = GPU_PRICING[selectedGpu];
+                    gpuStartTime = Date.now();
+                    
+                    // Activate badge
+                    const badge = document.getElementById('gpu-badge');
+                    badge.classList.add('active');
+                    
+                    // Start rotating display
+                    startGpuRotation();
+                    
+                    showToast('success', 'GPU Upgraded', `${GPU_NAMES[selectedGpu]} activated at $${currentGpuPrice}/hr`);
                     closeGpuModal();
                 } else {
                     showToast('error', 'GPU Error', data.error || 'Failed to upgrade GPU');
                 }
             } catch (error) {
                 showToast('error', 'Connection Error', 'Backend not reachable. Is port 8000 running?');
+            }
+        }
+        
+        function startGpuRotation() {
+            const gpuText = document.getElementById('gpu-text');
+            let showingCost = true;
+            
+            // Clear existing interval
+            if (gpuRotateInterval) {
+                clearInterval(gpuRotateInterval);
+            }
+            
+            // Initial update
+            updateGpuDisplay();
+            
+            // Rotate every 3 seconds
+            gpuRotateInterval = setInterval(() => {
+                showingCost = !showingCost;
+                
+                // Fade out
+                gpuText.style.opacity = '0';
+                
+                setTimeout(() => {
+                    if (showingCost) {
+                        // Show GPU cost
+                        if (currentGpuPrice === 0) {
+                            gpuText.textContent = `⚡ ${GPU_NAMES[currentGpuTier]} (FREE)`;
+                        } else {
+                            gpuText.textContent = `⚡ ${GPU_NAMES[currentGpuTier]} $${currentGpuPrice}/hr`;
+                        }
+                    } else {
+                        // Show total spent
+                        const elapsed = gpuStartTime ? (Date.now() - gpuStartTime) / 1000 / 60 / 60 : 0; // hours
+                        totalSpent = elapsed * currentGpuPrice;
+                        if (totalSpent < 0.01 && currentGpuPrice > 0) {
+                            gpuText.textContent = `💰 Starting...`;
+                        } else {
+                            gpuText.textContent = `💰 Spent: $${totalSpent.toFixed(3)}`;
+                        }
+                    }
+                    // Fade in
+                    gpuText.style.opacity = '1';
+                }, 300);
+            }, 3000);
+        }
+        
+        function updateGpuDisplay() {
+            const gpuText = document.getElementById('gpu-text');
+            if (currentGpuPrice === 0) {
+                gpuText.textContent = `⚡ ${GPU_NAMES[currentGpuTier]} (FREE)`;
+            } else {
+                gpuText.textContent = `⚡ ${GPU_NAMES[currentGpuTier]} $${currentGpuPrice}/hr`;
             }
         }
         
@@ -1418,8 +1531,9 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
         
         // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', () => {
-            showToast('info', 'EDEN V5 Ready', 'Preview box optimized. Negative keywords active. Seagate save ready.');
+            showToast('info', 'EDEN V5 Ready', 'Preview box optimized. Negative keywords active. Seagate save ready. GPU tracking active.');
             
+            // Check backend
             fetch('http://localhost:8000/')
                 .then(r => r.ok ? showToast('success', 'Backend Connected', 'API ready on port 8000') : Promise.reject())
                 .catch(() => {
@@ -1427,6 +1541,24 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                     document.getElementById('status-badge').classList.add('error');
                     document.getElementById('status-badge').textContent = '● OFFLINE';
                 });
+            
+            // Check for existing active GPU upgrades
+            fetch('http://localhost:8000/api/gpu/active-upgrades')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.upgrades && data.upgrades.length > 0) {
+                        const upgrade = data.upgrades[0];
+                        currentGpuTier = upgrade.gpu_tier || 't4';
+                        currentGpuPrice = GPU_PRICING[currentGpuTier] || 0;
+                        gpuStartTime = upgrade.started_at ? new Date(upgrade.started_at).getTime() : Date.now();
+                        
+                        document.getElementById('gpu-badge').classList.add('active');
+                        startGpuRotation();
+                        
+                        showToast('info', 'GPU Active', `${GPU_NAMES[currentGpuTier]} is running at $${currentGpuPrice}/hr`);
+                    }
+                })
+                .catch(() => console.log('Could not check GPU status'));
         });
     </script>
 </body>
