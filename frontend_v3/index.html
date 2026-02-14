@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDEN FILMS - AI Movie Production Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --gold-primary: #D4AF37;
+            --gold-light: #F4D03F;
+            --gold-dark: #B8860B;
+            --rose-gold: #B76E79;
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-hover: #1a1a25;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-color: #2a2a3a;
+            --accent-cyan: #00d4ff;
+            --accent-pink: #ff6b9d;
+            --accent-purple: #8b5cf6;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        .metallic-gold {
+            background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .metallic-rose {
+            background: linear-gradient(135deg, #ff6b9d 0%, #B76E79 50%, #ff8fab 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .metallic-gold-text {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, #D4AF37 0%, #ff6b9d 50%, #B76E79 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .nav-tab:hover, .nav-tab.active {
+            border-color: var(--gold-primary);
+            color: var(--gold-light);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .nav-tab.active {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .badge {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        /* Main Container */
+        .main-container { padding-top: 80px; }
+        
+        /* Page Sections */
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        /* ============ GENERATE PAGE ============ */
+        .playground {
+            height: calc(100vh - 80px);
+            display: flex;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, #0d0d14 100%);
+        }
+        
+        .playground-left, .playground-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+        }
+        
+        .playground-left { border-right: 1px solid var(--border-color); }
+        
+        .section-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Reference Images Upload */
+        .ref-images-section {
+            margin-bottom: 1rem;
+        }
+        
+        .ref-upload-box {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--bg-card);
+        }
+        
+        .ref-upload-box:hover {
+            border-color: var(--gold-primary);
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .ref-upload-box input { display: none; }
+        
+        .ref-thumbnails {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .ref-thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+            position: relative;
+        }
+        
+        .ref-thumb:hover {
+            border-color: var(--gold-primary);
+        }
+        
+        .ref-thumb .remove {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        /* Prompt Area */
+        .prompt-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .prompt-textarea {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: var(--text-primary);
+            font-size: 1.125rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .prompt-textarea:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+        
+        .quick-commands {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .quick-cmd {
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-align: left;
+        }
+        
+        .quick-cmd:hover {
+            border-color: var(--gold-primary);
+        }
+        
+        .cmd-key { color: var(--accent-cyan); font-weight: 600; }
+        
+        /* Preview */
+        .preview-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            position: relative;
+        }
+        
+        .preview-box.has-content {
+            border-style: solid;
+            border-color: var(--gold-primary);
+        }
+        
+        .preview-placeholder {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .preview-placeholder .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        #preview-media {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .loading {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 15, 0.9);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .loading.active { display: flex; }
+        
+        .spinner {
+            width: 48px; height: 48px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--gold-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Expert Layer Panel */
+        .expert-panel {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+            border: 1px solid var(--accent-purple);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-top: 1rem;
+        }
+        
+        .expert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+        
+        .expert-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.875rem;
+            color: var(--accent-purple);
+            letter-spacing: 0.05em;
+        }
+        
+        .expert-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .layer-control {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        .layer-name {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        
+        /* Mode Toggle */
+        .mode-section {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem 2rem;
+        }
+        
+        .mode-tabs {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 1rem 2rem;
+            background: var(--bg-hover);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mode-btn:hover {
+            border-color: var(--gold-primary);
+            color: var(--text-primary);
+        }
+        
+        .mode-btn.active {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%);
+            border-color: var(--gold-primary);
+            color: var(--gold-light);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+        
+        /* Settings */
+        .settings-section {
+            background: var(--bg-dark);
+            padding: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .setting-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+        
+        .setting-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .setting-value { color: var(--gold-light); font-weight: 600; }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-hover);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px; height: 18px;
+            background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        select, input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            outline: none;
+        }
+        
+        select:focus, input:focus { border-color: var(--gold-primary); }
+        
+        /* Negative & Generate */
+        .negative-section {
+            padding: 0 2rem 2rem;
+            background: var(--bg-dark);
+        }
+        
+        .negative-box {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .negative-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .negative-label span { color: var(--accent-cyan); }
+        
+        .generate-section {
+            padding: 2rem;
+            text-align: center;
+            background: var(--bg-dark);
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
+            color: #000;
+            border: none;
+            padding: 1.25rem 4rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.5);
+        }
+        
+        /* ============ EDITOR PAGE ============ */
+        .editor-container {
+            display: flex;
+            height: calc(100vh - 80px);
+        }
+        
+        .editor-sidebar {
+            width: 320px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .sidebar-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: var(--gold-light);
+        }
+        
+        /* Timeline */
+        .timeline-section {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+        
+        .timeline-track {
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            min-height: 80px;
+        }
+        
+        .track-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .track-content {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+        }
+        
+        .timeline-clip {
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-cyan) 100%);
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+        
+        /* Chat Panel */
+        .chat-section {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+        
+        .chat-message {
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .chat-message.user {
+            background: rgba(0, 212, 255, 0.1);
+            margin-left: 2rem;
+        }
+        
+        .chat-message.agent {
+            background: rgba(139, 92, 246, 0.1);
+            margin-right: 2rem;
+        }
+        
+        .chat-input-area {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+        
+        .chat-send {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-purple);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+        }
+        
+        /* Editor Main */
+        .editor-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .preview-area {
+            flex: 1;
+            background: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .preview-video-container {
+            width: 80%;
+            max-width: 960px;
+            aspect-ratio: 16/9;
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .preview-video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        /* Agentic Teams Panel */
+        .agents-panel {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem;
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+        }
+        
+        .agent-card {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            min-width: 200px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .agent-card:hover {
+            border-color: var(--accent-pink);
+            transform: translateY(-2px);
+        }
+        
+        .agent-card.active {
+            border-color: var(--accent-pink);
+            box-shadow: 0 0 20px rgba(255, 107, 157, 0.2);
+        }
+        
+        .agent-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .agent-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .agent-role {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Render Options */
+        .render-panel {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+        
+        .render-option {
+            background: var(--bg-hover);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            min-width: 200px;
+        }
+        
+        .render-option:hover {
+            border-color: var(--gold-primary);
+        }
+        
+        .render-option.selected {
+            border-color: var(--gold-primary);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .render-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .render-btn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Orbitron', sans-serif;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        /* Audio/TTS Panel */
+        .audio-panel {
+            width: 280px;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border-color);
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+        
+        .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.875rem;
+            color: var(--gold-light);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .tts-section {
+            margin-bottom: 2rem;
+        }
+        
+        .tts-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+        
+        .voice-select {
+            margin-bottom: 1rem;
+        }
+        
+        .tts-textarea {
+            width: 100%;
+            height: 100px;
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            resize: none;
+            margin-bottom: 0.75rem;
+        }
+        
+        .tts-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--accent-cyan);
+            border: none;
+            border-radius: 8px;
+            color: var(--bg-dark);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* Audio Mastering */
+        .mastering-control {
+            margin-bottom: 1.5rem;
+        }
+        
+        .mastering-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">💕</div>
+            <h1 class="logo-text metallic-gold metallic-gold-text">EDEN FILMS</h1>
+        </div>
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="showPage('generate')" id="nav-generate">🎨 REALISM ENGINE</button>
+            <button class="nav-tab" onclick="showPage('editor')" id="nav-editor">🎬 FILM EDITOR</button>
+            <button class="nav-tab" onclick="showPage('library')" id="nav-library">💾 LIBRARY</button>
+            <button class="nav-tab" onclick="showPage('deploy')" id="nav-deploy">🚀 DEPLOY</button>
+        </nav>
+        <div class="header-right">
+            <div class="badge">⚡ AGENTS</div>
+            <div class="badge" style="border-color:#ff6b9d;color:#ff6b9d">🎬 STUDIO</div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- ============ GENERATE PAGE ============ -->
+        <div id="page-generate" class="page active">
+            <!-- Playground -->
+            <section class="playground">
+                <!-- Left: Prompt + Context -->
+                <div class="playground-left">
+                    <!-- Reference Images -->
+                    <div class="ref-images-section">
+                        <div class="section-title">📎 Reference Images (Context)</div>
+                        <div class="ref-upload-box" onclick="document.getElementById('ref-upload').click()">
+                            <input type="file" id="ref-upload" multiple accept="image/*" onchange="handleRefUpload(event)">
+                            <p>📤 Click to upload multiple reference images</p>
+                            <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.5rem">
+                                These guide face consistency, style, and composition
+                            </p>
+                        </div>
+                        <div class="ref-thumbnails" id="ref-thumbnails"></div>
+                    </div>
+                    
+                    <!-- Prompt -->
+                    <div class="prompt-container">
+                        <div class="section-title">💬 Prompt</div>
+                        <textarea class="prompt-textarea" id="prompt" placeholder="Describe your romantic scene...
+
+Example: A tender moment between two people, soft golden hour lighting, intimate atmosphere, photorealistic, cinematic composition"></textarea>
+                        
+                        <!-- Expert Layer Panel -->
+                        <div class="expert-panel">
+                            <div class="expert-header" onclick="toggleExpert()">
+                                <span class="expert-title">🔧 EXPERT LAYER STITCHING</span>
+                                <span id="expert-toggle">▼</span>
+                            </div>
+                            <div class="expert-grid" id="expert-content">
+                                <div class="layer-control">
+                                    <div class="layer-name">Face Consistency</div>
+                                    <input type="range" min="0" max="100" value="80">
+                                </div>
+                                <div class="layer-control">
+                                    <div class="layer-name">Skin Detail</div>
+                                    <input type="range" min="0" max="100" value="90">
+                                </div>
+                                <div class="layer-control">
+                                    <div class="layer-name">Lighting Match</div>
+                                    <input type="range" min="0" max="100" value="70">
+                                </div>
+                                <div class="layer-control">
+                                    <div class="layer-name">Pose Coherence</div>
+                                    <input type="range" min="0" max="100" value="75">
+                                </div>
+                                <div class="layer-control">
+                                    <div class="layer-name">Style Transfer</div>
+                                    <input type="range" min="0" max="100" value="60">
+                                </div>
+                                <div class="layer-control">
+                                    <div class="layer-name">Emotion Intensity</div>
+                                    <input type="range" min="0" max="100" value="85">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-commands">
+                            <button class="quick-cmd" onclick="applyCmd('romantic')"><span class="cmd-key">/romantic</span> - Romantic scene preset</button>
+                            <button class="quick-cmd" onclick="applyCmd('intimate')"><span class="cmd-key">/intimate</span> - Intimate moment preset</button>
+                            <button class="quick-cmd" onclick="applyCmd('cinematic')"><span class="cmd-key">/cinematic</span> - Cinematic lighting</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right: Preview -->
+                <div class="playground-right">
+                    <div class="section-title">🎨 Preview</div>
+                    <div class="preview-box" id="previewBox">
+                        <div class="preview-placeholder" id="placeholder">
+                            <div class="icon">💕</div>
+                            <p>Your romantic scene awaits</p>
+                        </div>
+                        <img id="preview-img" class="hidden">
+                        <video id="preview-video" class="hidden" controls></video>
+                        <div class="loading" id="loading">
+                            <div class="spinner"></div>
+                            <p>Creating with EDEN...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Mode Toggle -->
+            <section class="mode-section">
+                <div class="mode-tabs">
+                    <button class="mode-btn active" id="btn-images" onclick="setMode('images')">📷 EDEN IMAGES</button>
+                    <button class="mode-btn" id="btn-videos" onclick="setMode('videos')">🎬 EDEN VIDEOS</button>
+                </div>
+            </section>
+            
+            <!-- Settings -->
+            <section class="settings-section">
+                <div class="settings-grid" id="image-settings">
+                    <div class="setting-box">
+                        <div class="setting-label">AI Model</div>
+                        <select id="img-model">
+                            <option value="flux-schnell">FLUX.1-schnell (Fast)</option>
+                            <option value="flux-klein">FLUX.2-klein 4B</option>
+                            <option value="flux-dev" selected>FLUX.1-dev (Quality)</option>
+                        </select>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Resolution</div>
+                        <select id="img-resolution">
+                            <option value="1024">1024×1024 (Square)</option>
+                            <option value="portrait" selected>768×1344 (Portrait)</option>
+                            <option value="landscape">1344×768 (Landscape)</option>
+                        </select>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Steps <span class="setting-value" id="steps-val">28</span></div>
+                        <input type="range" id="img-steps" min="1" max="50" value="28" oninput="updateVal('steps-val', this.value)">
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Guidance <span class="setting-value" id="guidance-val">5.0</span></div>
+                        <input type="range" id="img-guidance" min="1" max="20" step="0.5" value="5" oninput="updateVal('guidance-val', this.value)">
+                    </div>
+                </div>
+                
+                <div class="settings-grid hidden" id="video-settings">
+                    <div class="setting-box">
+                        <div class="setting-label">Video Model</div>
+                        <select id="video-model">
+                            <option value="wan-t2v-1.3b">Wan2.1-T2V-1.3B</option>
+                            <option value="wan-t2v-14b" selected>Wan2.1-T2V-14B (Quality)</option>
+                        </select>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Duration <span class="setting-value" id="duration-val">5s</span></div>
+                        <input type="range" id="video-duration" min="2" max="10" value="5" oninput="updateVal('duration-val', this.value + 's')">
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">FPS <span class="setting-value" id="fps-val">24</span></div>
+                        <input type="range" id="video-fps" min="16" max="30" value="24" oninput="updateVal('fps-val', this.value)">
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Negative & Generate -->
+            <section class="negative-section">
+                <div class="negative-box">
+                    <div class="negative-label">Negative Prompt <span>(Auto: cartoon, 3D render, unrealistic)</span></div>
+                    <input type="text" id="negative-prompt" placeholder="Add exclusions...">
+                </div>
+            </section>
+            
+            <section class="generate-section">
+                <button class="generate-btn" onclick="generate()" id="gen-btn">🚀 CREATE ROMANTIC SCENE</button>
+            </section>
+        </div>
+
+        <!-- ============ EDITOR PAGE ============ -->
+        <div id="page-editor" class="page">
+            <div class="editor-container">
+                <!-- Sidebar: Timeline + Chat -->
+                <div class="editor-sidebar">
+                    <div class="sidebar-header">
+                        <div class="sidebar-title">🎬 Timeline</div>
+                    </div>
+                    
+                    <!-- Timeline Tracks -->
+                    <div class="timeline-section">
+                        <div class="timeline-track">
+                            <div class="track-label">🎥 Video</div>
+                            <div class="track-content" id="video-track">
+                                <div class="timeline-clip">Scene 1</div>
+                                <div class="timeline-clip">Scene 2</div>
+                            </div>
+                        </div>
+                        <div class="timeline-track">
+                            <div class="track-label">🎵 Audio</div>
+                            <div class="track-content" id="audio-track">
+                                <div class="timeline-clip" style="background:var(--accent-pink)">Music</div>
+                            </div>
+                        </div>
+                        <div class="timeline-track">
+                            <div class="track-label">💬 Dialogue</div>
+                            <div class="track-content" id="dialogue-track">
+                                <button onclick="addDialogue()" style="padding:0.5rem 1rem;background:var(--bg-hover);border:1px dashed var(--border-color);border-radius:4px;color:var(--text-secondary);cursor:pointer">+ Add TTS</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Chat for Editing -->
+                    <div class="chat-section">
+                        <div class="section-title">🤖 AI Editor Assistant</div>
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="chat-message agent">Hello! I'm your AI editing assistant. Describe what you want, and I'll help create your romantic scene.</div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" class="chat-input" id="chat-input" placeholder="e.g., 'Add soft transitions between scenes'" onkeypress="if(event.key==='Enter')sendChat()">
+                            <button class="chat-send" onclick="sendChat()">Send</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main: Preview -->
+                <div class="editor-main">
+                    <div class="preview-area">
+                        <div class="preview-video-container">
+                            <video id="editor-preview" controls poster="">
+                                <source src="" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                    
+                    <!-- Agentic Teams -->
+                    <div class="agents-panel">
+                        <div class="agent-card active" onclick="selectAgent('director')">
+                            <div class="agent-avatar">🎬</div>
+                            <div class="agent-name">Director</div>
+                            <div class="agent-role">Scene composition & pacing</div>
+                        </div>
+                        <div class="agent-card" onclick="selectAgent('editor')">
+                            <div class="agent-avatar">✂️</div>
+                            <div class="agent-name">Editor</div>
+                            <div class="agent-role">Cuts & transitions</div>
+                        </div>
+                        <div class="agent-card" onclick="selectAgent('colorist')">
+                            <div class="agent-avatar">🎨</div>
+                            <div class="agent-name">Colorist</div>
+                            <div class="agent-role">Color grading & mood</div>
+                        </div>
+                        <div class="agent-card" onclick="selectAgent('sound')">
+                            <div class="agent-avatar">🎵</div>
+                            <div class="agent-name">Sound Designer</div>
+                            <div class="agent-role">Audio & music</div>
+                        </div>
+                        <div class="agent-card" onclick="selectAgent('dialogue')">
+                            <div class="agent-avatar">💬</div>
+                            <div class="agent-name">Dialogue Coach</div>
+                            <div class="agent-role">TTS & voice tuning</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Render Options -->
+                    <div class="render-panel">
+                        <div class="render-option selected" onclick="selectRender('romantic')">
+                            <div class="render-icon">💕</div>
+                            <div><strong>Romantic Cut</strong></div>
+                            <div style="font-size:0.75rem;color:var(--text-secondary)">Soft transitions, warm tones</div>
+                        </div>
+                        <div class="render-option" onclick="selectRender('cinematic')">
+                            <div class="render-icon">🎬</div>
+                            <div><strong>Cinematic Cut</strong></div>
+                            <div style="font-size:0.75rem;color:var(--text-secondary)">Dramatic pacing, film look</div>
+                        </div>
+                        <button class="render-btn" onclick="renderMovie()">🎬 RENDER MOVIE</button>
+                    </div>
+                </div>
+                
+                <!-- Right: Audio/TTS -->
+                <div class="audio-panel">
+                    <div class="panel-title">🔊 Audio Suite</div>
+                    
+                    <!-- Qwen TTS -->
+                    <div class="tts-section">
+                        <div class="tts-label">Qwen TTS - Voice Design</div>
+                        <select class="voice-select" id="voice-select">
+                            <option value="romantic-female">Romantic Female</option>
+                            <option value="gentle-male">Gentle Male</option>
+                            <option value="whisper">Intimate Whisper</option>
+                            <option value="clone">Clone from Sample</option>
+                        </select>
+                        <textarea class="tts-textarea" id="tts-text" placeholder="Enter dialogue text...
+
+Example: 'I've been thinking about you all day...'"></textarea>
+                        <button class="tts-btn" onclick="generateTTS()">🎙️ Generate Speech</button>
+                    </div>
+                    
+                    <!-- Audio Mastering -->
+                    <div class="tts-label">Audio Mastering</div>
+                    <div class="mastering-control">
+                        <div class="mastering-label">Music Volume <span>70%</span></div>
+                        <input type="range" value="70">
+                    </div>
+                    <div class="mastering-control">
+                        <div class="mastering-label">Dialogue Volume <span>85%</span></div>
+                        <input type="range" value="85">
+                    </div>
+                    <div class="mastering-control">
+                        <div class="mastering-label">Ambience <span>40%</span></div>
+                        <input type="range" value="40">
+                    </div>
+                    <div class="mastering-control">
+                        <div class="mastering-label">Reverb <span>20%</span></div>
+                        <input type="range" value="20">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ LIBRARY PAGE (Placeholder) ============ -->
+        <div id="page-library" class="page">
+            <div style="padding:4rem;text-align:center">
+                <h2 class="metallic-gold metallic-gold-text" style="font-size:2rem;margin-bottom:1rem">💾 Content Library</h2>
+                <p style="color:var(--text-secondary)">Your generated scenes and movies will appear here</p>
+            </div>
+        </div>
+
+        <!-- ============ DEPLOY PAGE (Placeholder) ============ -->
+        <div id="page-deploy" class="page">
+            <div style="padding:4rem;text-align:center">
+                <h2 class="metallic-gold metallic-gold-text" style="font-size:2rem;margin-bottom:1rem">🚀 Deploy to SaaS</h2>
+                <p style="color:var(--text-secondary)">Deploy your content to your Romantic Companion platform</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'images';
+        let currentPage = 'generate';
+        let referenceImages = [];
+        
+        // Page Navigation
+        function showPage(page) {
+            currentPage = page;
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('page-' + page).classList.add('active');
+            document.getElementById('nav-' + page).classList.add('active');
+        }
+        
+        // Reference Images
+        function handleRefUpload(event) {
+            const files = Array.from(event.target.files);
+            const container = document.getElementById('ref-thumbnails');
+            
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    referenceImages.push(e.target.result);
+                    const thumb = document.createElement('div');
+                    thumb.className = 'ref-thumb';
+                    thumb.innerHTML = `
+                        <img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:6px">
+                        <button class="remove" onclick="removeRef(this)">×</button>
+                    `;
+                    container.appendChild(thumb);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        function removeRef(btn) {
+            btn.parentElement.remove();
+        }
+        
+        // Expert Panel Toggle
+        function toggleExpert() {
+            const content = document.getElementById('expert-content');
+            const toggle = document.getElementById('expert-toggle');
+            content.classList.toggle('hidden');
+            toggle.textContent = content.classList.contains('hidden') ? '▶' : '▼';
+        }
+        
+        // Mode Toggle
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('btn-images').classList.toggle('active', mode === 'images');
+            document.getElementById('btn-videos').classList.toggle('active', mode === 'videos');
+            document.getElementById('image-settings').classList.toggle('hidden', mode !== 'images');
+            document.getElementById('video-settings').classList.toggle('hidden', mode !== 'videos');
+            document.getElementById('gen-btn').textContent = mode === 'images' ? '🚀 CREATE ROMANTIC SCENE' : '🚀 CREATE ROMANTIC VIDEO';
+        }
+        
+        function updateVal(id, val) {
+            document.getElementById(id).textContent = val;
+        }
+        
+        function applyCmd(cmd) {
+            const prompt = document.getElementById('prompt');
+            const negative = document.getElementById('negative-prompt');
+            
+            switch(cmd) {
+                case 'romantic':
+                    prompt.value = 'Romantic scene, tender embrace, soft golden hour lighting, intimate atmosphere, photorealistic, emotional connection, cinematic depth of field';
+                    negative.value = 'cartoon, anime, 3D render, deformed, blurry, group of people, public setting';
+                    break;
+                case 'intimate':
+                    prompt.value = 'Intimate moment, close-up portrait, warm candlelight, bedroom setting, silk textures, loving gaze, photorealistic skin detail';
+                    negative.value = 'bright daylight, outdoor, crowded, cartoon, unrealistic proportions';
+                    break;
+                case 'cinematic':
+                    document.getElementById('img-steps').value = 40;
+                    updateVal('steps-val', 40);
+                    document.getElementById('img-guidance').value = 6;
+                    updateVal('guidance-val', 6);
+                    break;
+            }
+        }
+        
+        async function generate() {
+            const prompt = document.getElementById('prompt').value;
+            if (!prompt.trim()) return;
+            
+            const loading = document.getElementById('loading');
+            const placeholder = document.getElementById('placeholder');
+            const previewBox = document.getElementById('previewBox');
+            const imgEl = document.getElementById('preview-img');
+            
+            loading.classList.add('active');
+            placeholder.style.display = 'none';
+            imgEl.classList.add('hidden');
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/flux/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        model_name: document.getElementById('img-model').value,
+                        resolution: document.getElementById('img-resolution').value,
+                        steps: parseInt(document.getElementById('img-steps').value),
+                        guidance: parseFloat(document.getElementById('img-guidance').value),
+                        seed: -1,
+                        negative_prompt: document.getElementById('negative-prompt').value,
+                        reference_images: referenceImages
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    imgEl.src = data.url;
+                    imgEl.classList.remove('hidden');
+                    previewBox.classList.add('has-content');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+        
+        // Editor Functions
+        function addDialogue() {
+            const track = document.getElementById('dialogue-track');
+            const clip = document.createElement('div');
+            clip.className = 'timeline-clip';
+            clip.style.background = 'var(--accent-cyan)';
+            clip.textContent = 'TTS ' + (track.children.length);
+            track.appendChild(clip);
+        }
+        
+        function sendChat() {
+            const input = document.getElementById('chat-input');
+            const messages = document.getElementById('chat-messages');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            // User message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-message user';
+            userMsg.textContent = text;
+            messages.appendChild(userMsg);
+            
+            // Agent response (simulated)
+            setTimeout(() => {
+                const agentMsg = document.createElement('div');
+                agentMsg.className = 'chat-message agent';
+                agentMsg.textContent = `I'll help you with that. Processing: "${text}"...`;
+                messages.appendChild(agentMsg);
+                messages.scrollTop = messages.scrollHeight;
+            }, 500);
+            
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+        }
+        
+        function selectAgent(agent) {
+            document.querySelectorAll('.agent-card').forEach(c => c.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            const messages = document.getElementById('chat-messages');
+            const msg = document.createElement('div');
+            msg.className = 'chat-message agent';
+            msg.innerHTML = `<strong>${agent.charAt(0).toUpperCase() + agent.slice(1)}:</strong> I'm now active. How can I help with your scene?`;
+            messages.appendChild(msg);
+            messages.scrollTop = messages.scrollHeight;
+        }
+        
+        function selectRender(type) {
+            document.querySelectorAll('.render-option').forEach(r => r.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+        }
+        
+        function renderMovie() {
+            alert('🎬 Starting movie render with selected agents and style...');
+        }
+        
+        function generateTTS() {
+            const text = document.getElementById('tts-text').value;
+            const voice = document.getElementById('voice-select').value;
+            if (!text.trim()) return;
+            
+            alert(`🎙️ Generating TTS with ${voice} voice: "${text.substring(0, 50)}..."`);
+            
+            // Add to dialogue track
+            addDialogue();
+        }
+    </script>
+</body>
+</html>

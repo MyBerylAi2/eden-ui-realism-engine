@@ -26,7 +26,7 @@ from generation_engine import generation_engine
 from chat_engine import chat_engine
 from flux_engine import (
     generate_image_fast, enhance_image_realism, generate_3d_trellis,
-    scan_seagate_model_library, pull_huggingface_model,
+    generate_video_wan21, scan_seagate_model_library, pull_huggingface_model,
     pull_ollama_model, pull_pinokio_app, OUTPUT_DIR
 )
 from hf_gpu_manager import gpu_manager
@@ -81,6 +81,16 @@ class EnhanceImageRequest(BaseModel):
 
 class Generate3DRequest(BaseModel):
     image_path: str
+
+
+class GenerateVideoRequest(BaseModel):
+    prompt: str
+    model_name: str = "wan-t2v-1.3b"
+    width: int = 832
+    height: int = 480
+    duration: int = 5
+    fps: int = 24
+    seed: int = -1
 
 
 class GPUUpgradeRequest(BaseModel):
@@ -195,6 +205,34 @@ async def flux_3d(request: Generate3DRequest):
         "glb_path": glb_path,
         "status": status,
         "url": f"/outputs/{Path(glb_path).name}" if glb_path else None
+    }
+
+
+@app.post("/api/video/generate")
+async def video_generate(request: GenerateVideoRequest):
+    """Generate video using Wan2.1 via HF Spaces."""
+    video_path, status = generate_video_wan21(
+        prompt=request.prompt,
+        model_name=request.model_name,
+        width=request.width,
+        height=request.height,
+        num_frames=request.duration * request.fps,
+        fps=request.fps,
+        cfg_high=6.5,
+        cfg_low=4.0,
+        seed=request.seed,
+        use_private=False,  # Use free queue by default
+        hf_token=settings.HF_TOKEN
+    )
+    
+    if not video_path:
+        raise HTTPException(status_code=500, detail=status)
+    
+    return {
+        "success": True,
+        "video_path": video_path,
+        "status": status,
+        "url": f"/outputs/{Path(video_path).name}"
     }
 
 

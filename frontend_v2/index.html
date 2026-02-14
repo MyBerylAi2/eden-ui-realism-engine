@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDEN REALISM ENGINE V2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --gold-primary: #D4AF37;
+            --gold-light: #F4D03F;
+            --gold-dark: #B8860B;
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-hover: #1a1a25;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-color: #2a2a3a;
+            --accent-cyan: #00d4ff;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        .metallic-gold {
+            background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .metallic-gold-text {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .logo-text { font-size: 1.5rem; }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .badge {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        /* Main Layout */
+        .main-container { padding-top: 80px; }
+        
+        /* Playground */
+        .playground {
+            height: calc(100vh - 80px);
+            display: flex;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, #0d0d14 100%);
+        }
+        
+        .playground-left, .playground-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+        }
+        
+        .playground-left {
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .section-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+        
+        /* Prompt Area */
+        .prompt-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .prompt-textarea {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: var(--text-primary);
+            font-size: 1.125rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .prompt-textarea:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+        
+        .quick-commands {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .quick-cmd {
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-align: left;
+        }
+        
+        .quick-cmd:hover {
+            border-color: var(--gold-primary);
+        }
+        
+        .cmd-key { color: var(--accent-cyan); font-weight: 600; }
+        
+        /* Preview */
+        .preview-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            position: relative;
+        }
+        
+        .preview-box.has-content {
+            border-style: solid;
+            border-color: var(--gold-primary);
+        }
+        
+        .preview-placeholder {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .preview-placeholder .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        #preview-media {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .loading {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 15, 0.9);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .loading.active { display: flex; }
+        
+        .spinner {
+            width: 48px; height: 48px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--gold-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Mode Toggle */
+        .mode-section {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem 2rem;
+        }
+        
+        .mode-tabs {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 1rem 2rem;
+            background: var(--bg-hover);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mode-btn:hover {
+            border-color: var(--gold-primary);
+            color: var(--text-primary);
+        }
+        
+        .mode-btn.active {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%);
+            border-color: var(--gold-primary);
+            color: var(--gold-light);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+        
+        /* Settings */
+        .settings-section {
+            background: var(--bg-dark);
+            padding: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .setting-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+        
+        .setting-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .setting-value { color: var(--gold-light); font-weight: 600; }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-hover);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px; height: 18px;
+            background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        select, input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            outline: none;
+        }
+        
+        select:focus, input:focus { border-color: var(--gold-primary); }
+        
+        /* Negative Prompt */
+        .negative-section {
+            padding: 0 2rem 2rem;
+            background: var(--bg-dark);
+        }
+        
+        .negative-box {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .negative-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .negative-label span { color: var(--accent-cyan); }
+        
+        /* Generate */
+        .generate-section {
+            padding: 2rem;
+            text-align: center;
+            background: var(--bg-dark);
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
+            color: #000;
+            border: none;
+            padding: 1.25rem 4rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.5);
+        }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">🌟</div>
+                <h1 class="logo-text metallic-gold metallic-gold-text">EDEN REALISM ENGINE</h1>
+            </div>
+            <div class="header-right">
+                <div class="badge">⚡ SCALE GPU</div>
+                <div class="badge" style="border-color:#666;color:#888">💾 SEAGATE</div>
+                <div class="badge" style="border-color:#22c55e;color:#22c55e">● CONNECTED</div>
+            </div>
+        </header>
+        
+        <!-- Playground -->
+        <section class="playground">
+            <!-- Left: Prompt -->
+            <div class="playground-left">
+                <div class="section-title">💬 EDEN Assistant</div>
+                <div class="prompt-container">
+                    <textarea class="prompt-textarea" id="prompt" placeholder="Describe what you want to create...
+
+Example: Photorealistic portrait of a woman with natural skin texture, cinematic lighting, 8K quality"></textarea>
+                    <div class="quick-commands">
+                        <button class="quick-cmd" onclick="applyCmd('enhance')"><span class="cmd-key">/enhance</span> - Enhance prompt</button>
+                        <button class="quick-cmd" onclick="applyCmd('negative')"><span class="cmd-key">/negative</span> - Get negative keywords</button>
+                        <button class="quick-cmd" onclick="applyCmd('preset')"><span class="cmd-key">/preset</span> - Load Kling-style preset</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right: Preview -->
+            <div class="playground-right">
+                <div class="section-title">🎨 Preview</div>
+                <div class="preview-box" id="previewBox">
+                    <div class="preview-placeholder" id="placeholder">
+                        <div class="icon">🎨</div>
+                        <p>Ready to Create</p>
+                        <p style="font-size:0.875rem;margin-top:0.5rem">Your generated content will appear here</p>
+                    </div>
+                    <img id="preview-img" class="hidden">
+                    <video id="preview-video" class="hidden" controls></video>
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Creating with EDEN...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Mode Toggle -->
+        <section class="mode-section">
+            <div class="mode-tabs">
+                <button class="mode-btn active" id="btn-images" onclick="setMode('images')">📷 EDEN IMAGES</button>
+                <button class="mode-btn" id="btn-videos" onclick="setMode('videos')">🎬 EDEN VIDEOS</button>
+            </div>
+        </section>
+        
+        <!-- Settings -->
+        <section class="settings-section">
+            <div class="settings-grid" id="image-settings">
+                <div class="setting-box">
+                    <div class="setting-label">AI Model</div>
+                    <select id="img-model">
+                        <option value="flux-schnell">FLUX.1-schnell (Fast)</option>
+                        <option value="flux-klein">FLUX.2-klein 4B (New)</option>
+                        <option value="flux-dev">FLUX.1-dev (Quality)</option>
+                    </select>
+                </div>
+                <div class="setting-box">
+                    <div class="setting-label">Resolution</div>
+                    <select id="img-resolution">
+                        <option value="1024 x 1024">1024×1024 (Square)</option>
+                        <option value="768 x 1344">768×1344 (Portrait)</option>
+                        <option value="1344 x 768">1344×768 (Landscape)</option>
+                        <option value="832 x 1216">832×1216 (Photo)</option>
+                        <option value="512 x 512">512×512 (Test)</option>
+                    </select>
+                </div>
+                <div class="setting-box">
+                    <div class="setting-label">Steps <span class="setting-value" id="steps-val">4</span></div>
+                    <input type="range" id="img-steps" min="1" max="50" value="4" oninput="updateVal('steps-val', this.value)">
+                </div>
+                <div class="setting-box">
+                    <div class="setting-label">Guidance <span class="setting-value" id="guidance-val">3.5</span></div>
+                    <input type="range" id="img-guidance" min="1" max="20" step="0.5" value="3.5" oninput="updateVal('guidance-val', this.value)">
+                </div>
+                <div class="setting-box">
+                    <div class="setting-label">Seed</div>
+                    <input type="number" id="img-seed" value="-1" placeholder="-1 for random">
+                </div>
+            </div>
+            
+            <div class="settings-grid hidden" id="video-settings">
+                <div class="setting-box">
+                    <div class="setting-label">Video Model</div>
+                    <select id="video-model">
+                        <option value="wan-t2v-1.3b">Wan2.1-T2V-1.3B (Fast)</option>
+                        <option value="wan-t2v-14b">Wan2.1-T2V-14B (Quality)</option>
+                        <option value="wan-i2v-14b">Wan2.1-I2V-14B (Img2Vid)</option>
+                    </select>
+                </div>
+                <div class="setting-box">
+                    <div class="setting-label">Duration <span class="setting-value" id="duration-val">2s</span></div>
+                    <input type="range" id="video-duration" min="1" max="5" value="2" oninput="updateVal('duration-val', this.value + 's')">
+                </div>
+                <div class="setting-box">
+                    <div class="setting-label">FPS <span class="setting-value" id="fps-val">16</span></div>
+                    <input type="range" id="video-fps" min="16" max="30" value="16" oninput="updateVal('fps-val', this.value)">
+                </div>
+                <div class="setting-box">
+                    <div class="setting-label">Resolution</div>
+                    <div style="display:flex;gap:0.5rem">
+                        <select id="video-width">
+                            <option value="256">256</option>
+                            <option value="480">480</option>
+                            <option value="512">512</option>
+                            <option value="720">720</option>
+                            <option value="832" selected>832</option>
+                        </select>
+                        <span style="color:var(--text-secondary);align-self:center">×</span>
+                        <select id="video-height">
+                            <option value="256">256</option>
+                            <option value="480" selected>480</option>
+                            <option value="512">512</option>
+                            <option value="720">720</option>
+                            <option value="832">832</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="setting-box">
+                    <div class="setting-label">CFG High-Noise <span class="setting-value" id="cfg-high-val">6.5</span></div>
+                    <input type="range" id="cfg-high" min="1" max="15" step="0.5" value="6.5" oninput="updateVal('cfg-high-val', this.value)">
+                </div>
+                <div class="setting-box">
+                    <div class="setting-label">CFG Low-Noise <span class="setting-value" id="cfg-low-val">4.0</span></div>
+                    <input type="range" id="cfg-low" min="1" max="10" step="0.5" value="4.0" oninput="updateVal('cfg-low-val', this.value)">
+                </div>
+            </div>
+        </section>
+        
+        <!-- Negative Prompt -->
+        <section class="negative-section">
+            <div class="negative-box">
+                <div class="negative-label">Negative Prompt <span>(EDEN defaults applied)</span></div>
+                <input type="text" id="negative-prompt" placeholder="Add additional negative keywords...">
+            </div>
+        </section>
+        
+        <!-- Generate Button -->
+        <section class="generate-section">
+            <button class="generate-btn" onclick="generate()" id="gen-btn">🚀 GENERATE IMAGE</button>
+        </section>
+    </div>
+    
+    <script>
+        let currentMode = 'images';
+        
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('btn-images').classList.toggle('active', mode === 'images');
+            document.getElementById('btn-videos').classList.toggle('active', mode === 'videos');
+            document.getElementById('image-settings').classList.toggle('hidden', mode !== 'images');
+            document.getElementById('video-settings').classList.toggle('hidden', mode !== 'videos');
+            document.getElementById('gen-btn').textContent = mode === 'images' ? '🚀 GENERATE IMAGE' : '🚀 GENERATE VIDEO';
+        }
+        
+        function updateVal(id, val) {
+            document.getElementById(id).textContent = val;
+        }
+        
+        function applyCmd(cmd) {
+            const prompt = document.getElementById('prompt');
+            const negative = document.getElementById('negative-prompt');
+            
+            switch(cmd) {
+                case 'enhance':
+                    prompt.value = 'Enhance: ' + prompt.value;
+                    break;
+                case 'negative':
+                    negative.value = 'deformed, blurry, low quality, cartoon, anime, unrealistic';
+                    break;
+                case 'preset':
+                    document.getElementById('img-model').value = 'flux-dev';
+                    document.getElementById('img-steps').value = 28;
+                    updateVal('steps-val', 28);
+                    document.getElementById('img-guidance').value = 5.0;
+                    updateVal('guidance-val', 5.0);
+                    negative.value = 'deformed face, cartoon, 3D render, unrealistic skin, plastic texture';
+                    break;
+            }
+        }
+        
+        async function generate() {
+            const prompt = document.getElementById('prompt').value;
+            if (!prompt.trim()) return;
+            
+            const loading = document.getElementById('loading');
+            const placeholder = document.getElementById('placeholder');
+            const previewBox = document.getElementById('previewBox');
+            const imgEl = document.getElementById('preview-img');
+            const vidEl = document.getElementById('preview-video');
+            
+            loading.classList.add('active');
+            placeholder.style.display = 'none';
+            imgEl.classList.add('hidden');
+            vidEl.classList.add('hidden');
+            
+            try {
+                if (currentMode === 'images') {
+                    const response = await fetch('http://localhost:8000/api/flux/generate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            prompt: prompt,
+                            model_name: document.getElementById('img-model').value,
+                            resolution: document.getElementById('img-resolution').value,
+                            steps: parseInt(document.getElementById('img-steps').value),
+                            guidance: parseFloat(document.getElementById('img-guidance').value),
+                            seed: parseInt(document.getElementById('img-seed').value),
+                            negative_prompt: document.getElementById('negative-prompt').value
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        imgEl.src = data.url;
+                        imgEl.classList.remove('hidden');
+                        previewBox.classList.add('has-content');
+                    }
+                } else {
+                    alert('Video generation endpoint needs to be implemented in backend');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Generation failed. Check console.');
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>

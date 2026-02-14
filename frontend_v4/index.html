@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDEN REALISM ENGINE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --gold-primary: #D4AF37;
+            --gold-light: #F4D03F;
+            --gold-dark: #B8860B;
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-hover: #1a1a25;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-color: #2a2a3a;
+            --accent-cyan: #00d4ff;
+            --accent-pink: #ff6b9d;
+            --accent-purple: #8b5cf6;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        .metallic-gold {
+            background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .metallic-gold-text {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .nav-tab {
+            padding: 0.75rem 2rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .nav-tab:hover, .nav-tab.active {
+            border-color: var(--gold-primary);
+            color: var(--gold-light);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .nav-tab.active {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .badge {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        /* Main */
+        .main-container { padding-top: 80px; }
+        
+        /* Page Sections */
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        /* ============ EDEN REALISM ENGINE (HOME) ============ */
+        .playground {
+            height: calc(100vh - 80px);
+            display: flex;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, #0d0d14 100%);
+        }
+        
+        .playground-left, .playground-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+        }
+        
+        .playground-left { border-right: 1px solid var(--border-color); }
+        
+        .section-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Reference Upload */
+        .ref-section { margin-bottom: 1rem; }
+        
+        .ref-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--bg-card);
+        }
+        
+        .ref-upload:hover { border-color: var(--gold-primary); }
+        .ref-upload input { display: none; }
+        
+        .ref-thumbs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        
+        .ref-thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+        
+        /* Prompt */
+        .prompt-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .prompt-textarea {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: var(--text-primary);
+            font-size: 1.125rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .prompt-textarea:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+        
+        .quick-commands {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .quick-cmd {
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-align: left;
+        }
+        
+        .quick-cmd:hover { border-color: var(--gold-primary); }
+        .cmd-key { color: var(--accent-cyan); font-weight: 600; }
+        
+        /* Preview */
+        .preview-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            position: relative;
+        }
+        
+        .preview-box.has-content {
+            border-style: solid;
+            border-color: var(--gold-primary);
+        }
+        
+        .preview-placeholder {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .preview-placeholder .icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
+        
+        #preview-media {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .loading {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 15, 0.9);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .loading.active { display: flex; }
+        
+        .spinner {
+            width: 48px; height: 48px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--gold-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* SEND TO FILM BUTTON */
+        .send-to-film {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-purple) 100%);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: none;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+        }
+        
+        .send-to-film:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.5);
+        }
+        
+        .send-to-film.show { display: block; }
+        
+        /* Mode Toggle */
+        .mode-section {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem 2rem;
+        }
+        
+        .mode-tabs {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 1rem 2rem;
+            background: var(--bg-hover);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mode-btn:hover {
+            border-color: var(--gold-primary);
+            color: var(--text-primary);
+        }
+        
+        .mode-btn.active {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%);
+            border-color: var(--gold-primary);
+            color: var(--gold-light);
+        }
+        
+        /* Settings */
+        .settings-section {
+            background: var(--bg-dark);
+            padding: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .setting-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+        
+        .setting-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .setting-value { color: var(--gold-light); font-weight: 600; }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-hover);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px; height: 18px;
+            background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        select, input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            outline: none;
+        }
+        
+        select:focus, input:focus { border-color: var(--gold-primary); }
+        
+        /* Generate Section */
+        .generate-section {
+            padding: 2rem;
+            text-align: center;
+            background: var(--bg-dark);
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
+            color: #000;
+            border: none;
+            padding: 1.25rem 4rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.5);
+        }
+        
+        /* Negative */
+        .negative-section {
+            padding: 0 2rem 2rem;
+            background: var(--bg-dark);
+        }
+        
+        .negative-box {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .negative-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .negative-label span { color: var(--accent-cyan); }
+        
+        /* ============ EDEN FILMS PAGE ============ */
+        .films-container {
+            display: flex;
+            height: calc(100vh - 80px);
+        }
+        
+        .films-sidebar {
+            width: 300px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .sidebar-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: var(--gold-light);
+        }
+        
+        .project-list {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+        
+        .project-item {
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .project-item:hover {
+            border-color: var(--gold-primary);
+        }
+        
+        .project-item.active {
+            border-color: var(--gold-primary);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .project-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .project-meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .new-project-btn {
+            margin: 1rem;
+            padding: 0.75rem;
+            background: var(--accent-cyan);
+            border: none;
+            border-radius: 8px;
+            color: var(--bg-dark);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .films-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .timeline-area {
+            flex: 1;
+            background: var(--bg-dark);
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+        
+        .timeline-track {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            min-height: 100px;
+        }
+        
+        .track-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .track-name {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        .track-content {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            min-height: 60px;
+            align-items: center;
+        }
+        
+        .sequence-clip {
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-cyan) 100%);
+            border-radius: 6px;
+            padding: 0.75rem 1.25rem;
+            min-width: 120px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        
+        .films-preview {
+            height: 300px;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .films-toolbar {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .tool-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+        
+        .tool-btn:hover {
+            border-color: var(--gold-primary);
+            color: var(--text-primary);
+        }
+        
+        .render-btn {
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-purple) 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">🎬</div>
+            <h1 class="logo-text metallic-gold metallic-gold-text">EDEN REALISM ENGINE</h1>
+        </div>
+        <nav class="nav-tabs">
+            <button class="nav-tab active" id="nav-home" onclick="showPage('home')">🏠 HOME</button>
+            <button class="nav-tab" id="nav-films" onclick="showPage('films')">🎬 EDEN FILMS</button>
+        </nav>
+        <div class="header-right">
+            <div class="badge">⚡ GPU</div>
+            <div class="badge" style="border-color:#666;color:#888">💾 BERYL</div>
+            <div class="badge" style="border-color:#22c55e;color:#22c55e">● ONLINE</div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- ============ HOME PAGE (EDEN REALISM ENGINE) ============ -->
+        <div id="page-home" class="page active">
+            <!-- Playground -->
+            <section class="playground">
+                <!-- Left: Prompt -->
+                <div class="playground-left">
+                    <div class="ref-section">
+                        <div class="section-title">📎 Reference Images</div>
+                        <div class="ref-upload" onclick="document.getElementById('ref-upload').click()">
+                            <input type="file" id="ref-upload" multiple accept="image/*" onchange="handleRefUpload(event)">
+                            <p>📤 Upload reference images for context</p>
+                            <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.5rem">Helps with face consistency & style</p>
+                        </div>
+                        <div class="ref-thumbs" id="ref-thumbs"></div>
+                    </div>
+                    
+                    <div class="prompt-box">
+                        <div class="section-title">💬 EDEN Assistant</div>
+                        <textarea class="prompt-textarea" id="prompt" placeholder="Describe what you want to create...
+
+Example: Photorealistic portrait, cinematic lighting, 8K quality"></textarea>
+                        
+                        <div class="quick-commands">
+                            <button class="quick-cmd" onclick="applyCmd('portrait')"><span class="cmd-key">/portrait</span> - Portrait preset</button>
+                            <button class="quick-cmd" onclick="applyCmd('scene')"><span class="cmd-key">/scene</span> - Scene preset</button>
+                            <button class="quick-cmd" onclick="applyCmd('video')"><span class="cmd-key">/video</span> - Video preset</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right: Preview -->
+                <div class="playground-right">
+                    <div class="section-title">🎨 Preview</div>
+                    <div class="preview-box" id="previewBox">
+                        <div class="preview-placeholder" id="placeholder">
+                            <div class="icon">🎨</div>
+                            <p>Ready to Create</p>
+                        </div>
+                        <img id="preview-img" class="hidden">
+                        <video id="preview-video" class="hidden" controls></video>
+                        <div class="loading" id="loading">
+                            <div class="spinner"></div>
+                            <p>Creating...</p>
+                        </div>
+                        <button class="send-to-film" id="sendToFilm" onclick="sendToFilm()">📤 SEND TO FILM SEQUENCE</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Mode Toggle -->
+            <section class="mode-section">
+                <div class="mode-tabs">
+                    <button class="mode-btn active" id="btn-img" onclick="setMode('image')">📷 IMAGE</button>
+                    <button class="mode-btn" id="btn-vid" onclick="setMode('video')">🎬 VIDEO</button>
+                </div>
+            </section>
+            
+            <!-- Settings -->
+            <section class="settings-section">
+                <div class="settings-grid" id="img-settings">
+                    <div class="setting-box">
+                        <div class="setting-label">Model</div>
+                        <select id="img-model">
+                            <option value="flux-schnell">FLUX.1-schnell</option>
+                            <option value="flux-dev" selected>FLUX.1-dev</option>
+                        </select>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Resolution</div>
+                        <select id="img-res">
+                            <option value="1024">1024×1024</option>
+                            <option value="portrait" selected>768×1344</option>
+                        </select>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Steps <span class="setting-value" id="steps-val">28</span></div>
+                        <input type="range" id="img-steps" min="1" max="50" value="28" oninput="updateVal('steps-val', this.value)">
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Guidance <span class="setting-value" id="guidance-val">5.0</span></div>
+                        <input type="range" id="img-guidance" min="1" max="20" step="0.5" value="5" oninput="updateVal('guidance-val', this.value)">
+                    </div>
+                </div>
+                
+                <div class="settings-grid hidden" id="vid-settings">
+                    <div class="setting-box">
+                        <div class="setting-label">Video Model</div>
+                        <select id="vid-model">
+                            <option value="wan-1.3b">Wan2.1-T2V-1.3B</option>
+                            <option value="wan-14b" selected>Wan2.1-T2V-14B</option>
+                        </select>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Duration <span class="setting-value" id="dur-val">5s</span></div>
+                        <input type="range" id="vid-dur" min="2" max="10" value="5" oninput="updateVal('dur-val', this.value + 's')">
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">FPS <span class="setting-value" id="fps-val">24</span></div>
+                        <input type="range" id="vid-fps" min="16" max="30" value="24" oninput="updateVal('fps-val', this.value)">
+                    </div>
+                </div>
+            </section>
+            
+            <section class="negative-section">
+                <div class="negative-box">
+                    <div class="negative-label">Negative Prompt <span>(auto-applied)</span></div>
+                    <input type="text" id="negative" placeholder="Add exclusions...">
+                </div>
+            </section>
+            
+            <section class="generate-section">
+                <button class="generate-btn" onclick="generate()" id="gen-btn">🚀 GENERATE</button>
+            </section>
+        </div>
+
+        <!-- ============ EDEN FILMS PAGE ============ -->
+        <div id="page-films" class="page">
+            <div class="films-container">
+                <!-- Sidebar: Projects -->
+                <div class="films-sidebar">
+                    <div class="sidebar-header">
+                        <div class="sidebar-title">🎬 BERYL BUCKET</div>
+                    </div>
+                    <button class="new-project-btn" onclick="newProject()">+ New Project</button>
+                    <div class="project-list" id="project-list">
+                        <div class="project-item active" onclick="selectProject(this, 'project1')">
+                            <div class="project-name">Romantic Scene #1</div>
+                            <div class="project-meta">3 clips • 2 min</div>
+                        </div>
+                        <div class="project-item" onclick="selectProject(this, 'project2')">
+                            <div class="project-name">Evening Walk</div>
+                            <div class="project-meta">5 clips • 4 min</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main: Timeline -->
+                <div class="films-main">
+                    <div class="timeline-area">
+                        <div class="timeline-track">
+                            <div class="track-header">
+                                <span class="track-name">🎥 Video Sequence</span>
+                                <span style="font-size:0.75rem;color:var(--text-secondary)">Drag clips to reorder</span>
+                            </div>
+                            <div class="track-content" id="video-track">
+                                <div class="sequence-clip">Intro Scene</div>
+                                <div class="sequence-clip">Main Shot</div>
+                                <div class="sequence-clip">Close-up</div>
+                            </div>
+                        </div>
+                        <div class="timeline-track">
+                            <div class="track-header">
+                                <span class="track-name">🎵 Audio Track</span>
+                            </div>
+                            <div class="track-content" id="audio-track">
+                                <div class="sequence-clip" style="background:var(--accent-pink)">Background Music</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="films-preview">
+                        <p style="color:var(--text-secondary)">Preview Area</p>
+                    </div>
+                    
+                    <div class="films-toolbar">
+                        <button class="tool-btn" onclick="addFromLibrary()">📁 Add from Library</button>
+                        <button class="tool-btn" onclick="importTTS()">🎙️ Import TTS</button>
+                        <button class="tool-btn" onclick="autoEdit()">✨ Auto Edit</button>
+                        <button class="render-btn" onclick="renderFilm()">🎬 RENDER FILM</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'image';
+        let currentPage = 'home';
+        let generatedContent = null;
+        let berylProjects = [];
+        
+        // Navigation
+        function showPage(page) {
+            currentPage = page;
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('page-' + page).classList.add('active');
+            document.getElementById('nav-' + page).classList.add('active');
+        }
+        
+        // Reference Upload
+        function handleRefUpload(e) {
+            const files = Array.from(e.target.files);
+            const container = document.getElementById('ref-thumbs');
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    img.className = 'ref-thumb';
+                    container.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // Quick Commands
+        function applyCmd(cmd) {
+            const prompt = document.getElementById('prompt');
+            switch(cmd) {
+                case 'portrait':
+                    prompt.value = 'Photorealistic portrait, natural skin texture, soft lighting, 8K';
+                    break;
+                case 'scene':
+                    prompt.value = 'Cinematic scene, golden hour, atmospheric, detailed environment';
+                    break;
+                case 'video':
+                    setMode('video');
+                    prompt.value = 'Smooth camera movement, cinematic motion, 24fps';
+                    break;
+            }
+        }
+        
+        // Mode Toggle
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('btn-img').classList.toggle('active', mode === 'image');
+            document.getElementById('btn-vid').classList.toggle('active', mode === 'video');
+            document.getElementById('img-settings').classList.toggle('hidden', mode !== 'image');
+            document.getElementById('vid-settings').classList.toggle('hidden', mode !== 'video');
+            document.getElementById('gen-btn').textContent = mode === 'image' ? '🚀 GENERATE IMAGE' : '🚀 GENERATE VIDEO';
+        }
+        
+        function updateVal(id, val) {
+            document.getElementById(id).textContent = val;
+        }
+        
+        // Generate - WIRED TO BACKEND
+        async function generate() {
+            const prompt = document.getElementById('prompt').value;
+            if (!prompt.trim()) {
+                alert('Please enter a prompt');
+                return;
+            }
+            
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('preview-img').classList.add('hidden');
+            document.getElementById('preview-video').classList.add('hidden');
+            document.getElementById('sendToFilm').classList.remove('show');
+            
+            try {
+                if (currentMode === 'image') {
+                    // Call FastAPI backend for image generation
+                    const response = await fetch('http://localhost:8000/api/flux/generate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            prompt: prompt,
+                            model_name: document.getElementById('img-model').value,
+                            resolution: document.getElementById('img-res').value,
+                            steps: parseInt(document.getElementById('img-steps').value),
+                            guidance: parseFloat(document.getElementById('img-guidance').value),
+                            seed: -1,
+                            negative_prompt: document.getElementById('negative').value
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        const img = document.getElementById('preview-img');
+                        img.src = 'http://localhost:8000' + data.url;
+                        img.classList.remove('hidden');
+                        document.getElementById('previewBox').classList.add('has-content');
+                        document.getElementById('sendToFilm').classList.add('show');
+                        generatedContent = { type: 'image', url: data.url, prompt: prompt };
+                    } else {
+                        alert('Generation failed: ' + data.status);
+                    }
+                } else {
+                    // Video generation via backend
+                    const response = await fetch('http://localhost:8000/api/video/generate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            prompt: prompt,
+                            model_name: document.getElementById('vid-model').value,
+                            duration: parseInt(document.getElementById('vid-dur').value),
+                            fps: parseInt(document.getElementById('vid-fps').value),
+                            width: 832,
+                            height: 480,
+                            seed: -1
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        const vid = document.getElementById('preview-video');
+                        vid.src = 'http://localhost:8000' + data.url;
+                        vid.classList.remove('hidden');
+                        document.getElementById('previewBox').classList.add('has-content');
+                        document.getElementById('sendToFilm').classList.add('show');
+                        generatedContent = { type: 'video', url: data.url, prompt: prompt };
+                    } else {
+                        alert('Video generation failed: ' + (data.error || 'Unknown error'));
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error connecting to backend. Make sure the server is running on port 8000.');
+            } finally {
+                document.getElementById('loading').classList.remove('active');
+            }
+        }
+        
+        // SEND TO FILM SEQUENCE
+        function sendToFilm() {
+            if (!generatedContent) return;
+            
+            // Save to BERYL BUCKET
+            const clipName = currentMode === 'image' ? 'Image Clip' : 'Video Clip';
+            const timestamp = new Date().toISOString();
+            
+            // Add to first project's video track
+            const track = document.getElementById('video-track');
+            const clip = document.createElement('div');
+            clip.className = 'sequence-clip';
+            clip.textContent = clipName + ' ' + (track.children.length + 1);
+            track.appendChild(clip);
+            
+            // Show confirmation
+            alert('📤 Sent to EDEN FILMS! Check the Film Editor.');
+            
+            // Switch to films page
+            showPage('films');
+        }
+        
+        // EDEN FILMS Functions
+        function newProject() {
+            const name = prompt('Project name:');
+            if (!name) return;
+            
+            const list = document.getElementById('project-list');
+            const item = document.createElement('div');
+            item.className = 'project-item';
+            item.onclick = function() { selectProject(this, name); };
+            item.innerHTML = `
+                <div class="project-name">${name}</div>
+                <div class="project-meta">0 clips • 0 min</div>
+            `;
+            list.appendChild(item);
+            
+            // Save to BERYL BUCKET
+            saveToBerylBucket(name);
+        }
+        
+        function selectProject(el, id) {
+            document.querySelectorAll('.project-item').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+        }
+        
+        function saveToBerylBucket(projectName) {
+            // In real implementation, this would save to Seagate/Beryl Bucket
+            console.log('Saving project to BERYL BUCKET:', projectName);
+            fetch('/api/beryl/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    bucket: 'BERYL_BUCKET',
+                    project: projectName,
+                    path: `/media/letsgo/9361ec48-323e-44ae-84d5-9060ae68b5751/BERYL_BUCKET/projects/${projectName}`
+                })
+            }).catch(e => console.log('Beryl save simulated'));
+        }
+        
+        function addFromLibrary() {
+            alert('📁 Opening media library...');
+        }
+        
+        function importTTS() {
+            alert('🎙️ Importing TTS audio...');
+        }
+        
+        function autoEdit() {
+            alert('✨ AI Auto-Edit: Analyzing clips and creating sequence...');
+        }
+        
+        function renderFilm() {
+            alert('🎬 Rendering film to BERYL BUCKET...');
+        }
+    </script>
+</body>
+</html>
