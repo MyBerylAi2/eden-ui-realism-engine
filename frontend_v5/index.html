@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDEN REALISM ENGINE V5</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --gold-primary: #D4AF37;
+            --gold-light: #F4D03F;
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-hover: #1a1a25;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-color: #2a2a3a;
+            --accent-cyan: #00d4ff;
+            --accent-pink: #ff6b9d;
+            --accent-purple: #8b5cf6;
+            --error-red: #ef4444;
+            --success-green: #22c55e;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        .metallic-gold {
+            background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .metallic-gold-text {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 20px;
+            min-width: 300px;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .toast.error {
+            border-color: var(--error-red);
+            border-left: 4px solid var(--error-red);
+        }
+        
+        .toast.success {
+            border-color: var(--success-green);
+            border-left: 4px solid var(--success-green);
+        }
+        
+        .toast.warning {
+            border-color: var(--gold-primary);
+            border-left: 4px solid var(--gold-primary);
+        }
+        
+        .toast.info {
+            border-color: var(--accent-cyan);
+            border-left: 4px solid var(--accent-cyan);
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        .toast.removing {
+            animation: slideOut 0.3s ease forwards;
+        }
+        
+        .toast-icon { font-size: 20px; }
+        .toast-content { flex: 1; }
+        .toast-title { font-weight: 600; margin-bottom: 4px; }
+        .toast-message { font-size: 14px; color: var(--text-secondary); }
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .nav-tab {
+            padding: 0.75rem 2rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        
+        .nav-tab:hover, .nav-tab.active {
+            border-color: var(--gold-primary);
+            color: var(--gold-light);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .badge {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .badge:hover {
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+        
+        .badge.error {
+            border-color: var(--error-red);
+            color: var(--error-red);
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        /* GPU Panel Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-overlay.active { display: flex; }
+        
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.25rem;
+            color: var(--gold-light);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .gpu-option {
+            background: var(--bg-hover);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .gpu-option:hover {
+            border-color: var(--gold-primary);
+        }
+        
+        .gpu-option.selected {
+            border-color: var(--gold-primary);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .gpu-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .gpu-specs {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .gpu-price {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+        
+        /* Main Container */
+        .main-container { padding-top: 80px; }
+        
+        /* Page Sections */
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        /* Playground */
+        .playground {
+            height: calc(100vh - 80px);
+            display: flex;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, #0d0d14 100%);
+        }
+        
+        .playground-left, .playground-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+        }
+        
+        .playground-left { border-right: 1px solid var(--border-color); }
+        
+        .section-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Agentic Teams Panel */
+        .agents-panel {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+            border: 1px solid var(--accent-purple);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .agents-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .agents-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            color: var(--accent-purple);
+            letter-spacing: 0.05em;
+        }
+        
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .agent-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.75rem;
+        }
+        
+        .agent-card:hover {
+            border-color: var(--accent-cyan);
+        }
+        
+        .agent-card.active {
+            border-color: var(--gold-primary);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .agent-card.error-handler {
+            border-color: var(--error-red);
+        }
+        
+        .agent-icon { font-size: 1.25rem; margin-bottom: 0.25rem; }
+        .agent-name { font-weight: 600; margin-bottom: 0.125rem; }
+        .agent-role { font-size: 0.625rem; color: var(--text-secondary); }
+        
+        /* Reference Upload */
+        .ref-section { margin-bottom: 0.75rem; }
+        
+        .ref-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--bg-card);
+        }
+        
+        .ref-upload:hover { border-color: var(--gold-primary); }
+        .ref-upload input { display: none; }
+        
+        .ref-thumbs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        
+        .ref-thumb {
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+            position: relative;
+        }
+        
+        /* Prompt */
+        .prompt-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .prompt-textarea {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .prompt-textarea:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+        
+        .quick-commands {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .quick-cmd {
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-align: left;
+        }
+        
+        .quick-cmd:hover { border-color: var(--gold-primary); }
+        .cmd-key { color: var(--accent-cyan); font-weight: 600; }
+        
+        /* Preview */
+        .preview-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            position: relative;
+        }
+        
+        .preview-box.has-content {
+            border-style: solid;
+            border-color: var(--gold-primary);
+        }
+        
+        .preview-placeholder {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .preview-placeholder .icon { font-size: 3rem; margin-bottom: 0.5rem; opacity: 0.5; }
+        
+        #preview-media {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .loading {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 15, 0.95);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .loading.active { display: flex; }
+        
+        .spinner {
+            width: 48px; height: 48px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--gold-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .error-display {
+            position: absolute;
+            inset: 0;
+            background: rgba(239, 68, 68, 0.1);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 2rem;
+        }
+        
+        .error-display.active { display: flex; }
+        
+        .error-icon { font-size: 3rem; }
+        .error-text { color: var(--error-red); text-align: center; }
+        .error-retry {
+            padding: 0.75rem 1.5rem;
+            background: var(--error-red);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .send-to-film {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-purple) 100%);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: none;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+        }
+        
+        .send-to-film.show { display: block; }
+        
+        /* Mode & Settings */
+        .mode-section {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+        }
+        
+        .mode-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            background: var(--bg-hover);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mode-btn.active {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%);
+            border-color: var(--gold-primary);
+            color: var(--gold-light);
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .setting-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        
+        .setting-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .setting-value { color: var(--gold-light); font-weight: 600; }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-hover);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px; height: 16px;
+            background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        select, input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 0.5rem;
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            outline: none;
+        }
+        
+        /* Generate Section */
+        .generate-section {
+            padding: 1.5rem;
+            text-align: center;
+            background: var(--bg-dark);
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
+            color: #000;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        .generate-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.5);
+        }
+        
+        .generate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+    
+    <!-- GPU Modal -->
+    <div class="modal-overlay" id="gpu-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">⚡ GPU SCALING</div>
+                <button class="modal-close" onclick="closeGpuModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="gpu-option" data-gpu="zero" onclick="selectGpu('zero')">
+                    <div>
+                        <div class="gpu-name">Zero GPU (Free)</div>
+                        <div class="gpu-specs">Shared CPU • Basic performance</div>
+                    </div>
+                    <div class="gpu-price">$0/hr</div>
+                </div>
+                <div class="gpu-option" data-gpu="t4" onclick="selectGpu('t4')">
+                    <div>
+                        <div class="gpu-name">NVIDIA T4</div>
+                        <div class="gpu-specs">16GB VRAM • Good for FLUX</div>
+                    </div>
+                    <div class="gpu-price">$0.45/hr</div>
+                </div>
+                <div class="gpu-option" data-gpu="l4" onclick="selectGpu('l4')">
+                    <div>
+                        <div class="gpu-name">NVIDIA L4</div>
+                        <div class="gpu-specs">24GB VRAM • Great for video</div>
+                    </div>
+                    <div class="gpu-price">$0.80/hr</div>
+                </div>
+                <div class="gpu-option" data-gpu="a10g" onclick="selectGpu('a10g')">
+                    <div>
+                        <div class="gpu-name">NVIDIA A10G</div>
+                        <div class="gpu-specs">24GB VRAM • High performance</div>
+                    </div>
+                    <div class="gpu-price">$1.20/hr</div>
+                </div>
+                <div class="gpu-option" data-gpu="a100" onclick="selectGpu('a100')">
+                    <div>
+                        <div class="gpu-name">NVIDIA A100</div>
+                        <div class="gpu-specs">80GB VRAM • Maximum power</div>
+                    </div>
+                    <div class="gpu-price">$4.50/hr</div>
+                </div>
+                <button class="generate-btn" style="width:100%;margin-top:1rem;" onclick="applyGpu()">APPLY GPU UPGRADE</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">🎬</div>
+            <h1 class="logo-text metallic-gold metallic-gold-text">EDEN REALISM ENGINE</h1>
+        </div>
+        <nav class="nav-tabs">
+            <button class="nav-tab active" id="nav-home" onclick="showPage('home')">🏠 HOME</button>
+            <button class="nav-tab" id="nav-films" onclick="showPage('films')">🎬 EDEN FILMS</button>
+        </nav>
+        <div class="header-right">
+            <div class="badge" onclick="openGpuModal()">⚡ SCALE GPU</div>
+            <div class="badge" style="border-color:#666;color:#888">💾 BERYL</div>
+            <div class="badge" id="status-badge" style="border-color:#22c55e;color:#22c55e">● ONLINE</div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- HOME PAGE -->
+        <div id="page-home" class="page active">
+            <section class="playground">
+                <!-- Left Side -->
+                <div class="playground-left">
+                    <!-- Agentic Teams -->
+                    <div class="agents-panel">
+                        <div class="agents-header" onclick="toggleAgents()">
+                            <span class="agents-title">🤖 AGENTIC TEAMS</span>
+                            <span id="agents-toggle">▼</span>
+                        </div>
+                        <div class="agents-grid" id="agents-content">
+                            <div class="agent-card active" onclick="selectAgent(this, 'kling')">
+                                <div class="agent-icon">👑</div>
+                                <div class="agent-name">Kling Expert</div>
+                                <div class="agent-role">Photorealism config</div>
+                            </div>
+                            <div class="agent-card" onclick="selectAgent(this, 'error')">
+                                <div class="agent-icon">🛡️</div>
+                                <div class="agent-name">Error Handler</div>
+                                <div class="agent-role">Auto-fix failures</div>
+                            </div>
+                            <div class="agent-card" onclick="selectAgent(this, 'detail')">
+                                <div class="agent-icon">🔍</div>
+                                <div class="agent-name">Detail Master</div>
+                                <div class="agent-role">Skin/pore realism</div>
+                            </div>
+                            <div class="agent-card" onclick="selectAgent(this, 'light')">
+                                <div class="agent-icon">💡</div>
+                                <div class="agent-name">Lighting Pro</div>
+                                <div class="agent-role">Cinematic light</div>
+                            </div>
+                            <div class="agent-card error-handler" onclick="selectAgent(this, 'retry')">
+                                <div class="agent-icon">🔄</div>
+                                <div class="agent-name">Retry Bot</div>
+                                <div class="agent-role">Auto-retry errors</div>
+                            </div>
+                            <div class="agent-card" onclick="selectAgent(this, 'prompt')">
+                                <div class="agent-icon">✨</div>
+                                <div class="agent-name">Prompt Engineer</div>
+                                <div class="agent-role">Optimize prompts</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reference Upload -->
+                    <div class="ref-section">
+                        <div class="section-title">📎 Reference Images</div>
+                        <div class="ref-upload" onclick="document.getElementById('ref-upload').click()">
+                            <input type="file" id="ref-upload" multiple accept="image/*" onchange="handleRefUpload(event)">
+                            <p>📤 Upload reference images</p>
+                            <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.25rem">For face consistency & style</p>
+                        </div>
+                        <div class="ref-thumbs" id="ref-thumbs"></div>
+                    </div>
+                    
+                    <!-- Prompt -->
+                    <div class="prompt-box">
+                        <div class="section-title">💬 Prompt</div>
+                        <textarea class="prompt-textarea" id="prompt" placeholder="Describe your scene...
+
+Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
+                        
+                        <div class="quick-commands">
+                            <button class="quick-cmd" onclick="applyCmd('portrait')"><span class="cmd-key">/portrait</span> - Portrait preset</button>
+                            <button class="quick-cmd" onclick="applyCmd('scene')"><span class="cmd-key">/scene</span> - Cinematic scene</button>
+                            <button class="quick-cmd" onclick="applyCmd('video')"><span class="cmd-key">/video</span> - Video preset</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Side: Preview -->
+                <div class="playground-right">
+                    <div class="section-title">🎨 Preview</div>
+                    <div class="preview-box" id="previewBox">
+                        <div class="preview-placeholder" id="placeholder">
+                            <div class="icon">🎨</div>
+                            <p>Ready to Create</p>
+                            <p style="font-size:0.75rem;color:var(--text-secondary)">Your content appears here</p>
+                        </div>
+                        <img id="preview-img" class="hidden">
+                        <video id="preview-video" class="hidden" controls></video>
+                        
+                        <div class="loading" id="loading">
+                            <div class="spinner"></div>
+                            <p>Generating with EDEN...</p>
+                            <p id="agent-status" style="font-size:0.75rem;color:var(--text-secondary)">Agents monitoring...</p>
+                        </div>
+                        
+                        <div class="error-display" id="error-display">
+                            <div class="error-icon">⚠️</div>
+                            <div class="error-text">
+                                <p style="font-weight:600">Generation Failed</p>
+                                <p id="error-message" style="font-size:0.875rem;margin-top:0.5rem">Unknown error</p>
+                            </div>
+                            <button class="error-retry" onclick="retryGeneration()">🔄 Retry with Agents</button>
+                        </div>
+                        
+                        <button class="send-to-film" id="sendToFilm" onclick="sendToFilm()">📤 SEND TO FILM SEQUENCE</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Mode & Settings -->
+            <section class="mode-section">
+                <div class="mode-tabs">
+                    <button class="mode-btn active" id="btn-img" onclick="setMode('image')">📷 IMAGE</button>
+                    <button class="mode-btn" id="btn-vid" onclick="setMode('video')">🎬 VIDEO</button>
+                </div>
+                
+                <div class="settings-grid" id="img-settings">
+                    <div class="setting-box">
+                        <div class="setting-label">Model</div>
+                        <select id="img-model">
+                            <option value="flux-schnell">FLUX.1-schnell</option>
+                            <option value="flux-dev" selected>FLUX.1-dev</option>
+                        </select>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Resolution</div>
+                        <select id="img-res">
+                            <option value="1024">1024×1024</option>
+                            <option value="portrait" selected>768×1344</option>
+                        </select>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Steps <span class="setting-value" id="steps-val">28</span></div>
+                        <input type="range" id="img-steps" min="1" max="50" value="28" oninput="updateVal('steps-val', this.value)">
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Guidance <span class="setting-value" id="guidance-val">5.0</span></div>
+                        <input type="range" id="img-guidance" min="1" max="20" step="0.5" value="5" oninput="updateVal('guidance-val', this.value)">
+                    </div>
+                </div>
+                
+                <div class="settings-grid hidden" id="vid-settings">
+                    <div class="setting-box">
+                        <div class="setting-label">Video Model</div>
+                        <select id="vid-model">
+                            <option value="wan-1.3b">Wan2.1-T2V-1.3B</option>
+                            <option value="wan-14b" selected>Wan2.1-T2V-14B</option>
+                        </select>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Duration <span class="setting-value" id="dur-val">5s</span></div>
+                        <input type="range" id="vid-dur" min="2" max="10" value="5" oninput="updateVal('dur-val', this.value + 's')">
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">FPS <span class="setting-value" id="fps-val">24</span></div>
+                        <input type="range" id="vid-fps" min="16" max="30" value="24" oninput="updateVal('fps-val', this.value)">
+                    </div>
+                </div>
+            </section>
+            
+            <section class="generate-section">
+                <button class="generate-btn" onclick="generate()" id="gen-btn">🚀 GENERATE</button>
+            </section>
+        </div>
+
+        <!-- FILMS PAGE -->
+        <div id="page-films" class="page">
+            <div style="padding:4rem;text-align:center">
+                <h2 class="metallic-gold metallic-gold-text" style="font-size:2rem;margin-bottom:1rem">🎬 EDEN FILMS</h2>
+                <p style="color:var(--text-secondary)">Film editor with timeline, agentic teams, and BERYL BUCKET integration</p>
+                <p style="color:var(--text-secondary);margin-top:1rem">(Full editor coming in next update)</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== TOAST NOTIFICATIONS ====================
+        function showToast(type, title, message, duration = 5000) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            
+            toast.innerHTML = `
+                <div class="toast-icon">${icons[type]}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('removing');
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+        
+        // ==================== GPU MODAL ====================
+        function openGpuModal() {
+            document.getElementById('gpu-modal').classList.add('active');
+        }
+        
+        function closeGpuModal() {
+            document.getElementById('gpu-modal').classList.remove('active');
+        }
+        
+        let selectedGpu = 't4';
+        
+        function selectGpu(gpu) {
+            selectedGpu = gpu;
+            document.querySelectorAll('.gpu-option').forEach(el => el.classList.remove('selected'));
+            document.querySelector(`[data-gpu="${gpu}"]`).classList.add('selected');
+        }
+        
+        async function applyGpu() {
+            showToast('info', 'GPU Scaling', `Upgrading to ${selectedGpu.toUpperCase()}...`);
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/gpu/upgrade', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        space_id: 'AIBRUH/video-studio',
+                        gpu_tier: selectedGpu,
+                        sleep_after_minutes: 30
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showToast('success', 'GPU Upgraded', `Now running on ${selectedGpu.toUpperCase()}`);
+                    closeGpuModal();
+                } else {
+                    showToast('error', 'GPU Error', data.error || 'Failed to upgrade GPU');
+                }
+            } catch (error) {
+                showToast('error', 'Connection Error', 'Backend not reachable. Is port 8000 running?');
+            }
+        }
+        
+        // ==================== AGENTIC TEAMS ====================
+        let activeAgents = ['kling'];
+        
+        function toggleAgents() {
+            const content = document.getElementById('agents-content');
+            const toggle = document.getElementById('agents-toggle');
+            content.classList.toggle('hidden');
+            toggle.textContent = content.classList.contains('hidden') ? '▶' : '▼';
+        }
+        
+        function selectAgent(el, agent) {
+            el.classList.toggle('active');
+            if (activeAgents.includes(agent)) {
+                activeAgents = activeAgents.filter(a => a !== agent);
+            } else {
+                activeAgents.push(agent);
+            }
+            showToast('info', 'Agent Updated', `${agent.toUpperCase()} agent ${activeAgents.includes(agent) ? 'activated' : 'deactivated'}`);
+        }
+        
+        // ==================== NAVIGATION ====================
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('page-' + page).classList.add('active');
+            document.getElementById('nav-' + page).classList.add('active');
+        }
+        
+        // ==================== REFERENCE UPLOAD ====================
+        function handleRefUpload(e) {
+            const files = Array.from(e.target.files);
+            const container = document.getElementById('ref-thumbs');
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    img.className = 'ref-thumb';
+                    container.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+            showToast('success', 'References Added', `${files.length} image(s) uploaded`);
+        }
+        
+        // ==================== QUICK COMMANDS ====================
+        function applyCmd(cmd) {
+            const prompt = document.getElementById('prompt');
+            switch(cmd) {
+                case 'portrait':
+                    prompt.value = 'Photorealistic portrait, 8K, natural skin texture, soft lighting, detailed pores, subsurface scattering';
+                    break;
+                case 'scene':
+                    prompt.value = 'Cinematic scene, golden hour, atmospheric lighting, photorealistic environment, 8K';
+                    break;
+                case 'video':
+                    setMode('video');
+                    prompt.value = 'Cinematic video, smooth camera movement, photorealistic, 24fps';
+                    break;
+            }
+        }
+        
+        // ==================== MODE & SETTINGS ====================
+        let currentMode = 'image';
+        
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('btn-img').classList.toggle('active', mode === 'image');
+            document.getElementById('btn-vid').classList.toggle('active', mode === 'video');
+            document.getElementById('img-settings').classList.toggle('hidden', mode !== 'image');
+            document.getElementById('vid-settings').classList.toggle('hidden', mode !== 'video');
+            document.getElementById('gen-btn').textContent = mode === 'image' ? '🚀 GENERATE IMAGE' : '🚀 GENERATE VIDEO';
+        }
+        
+        function updateVal(id, val) {
+            document.getElementById(id).textContent = val;
+        }
+        
+        // ==================== GENERATION WITH ERROR HANDLING ====================
+        let lastPrompt = '';
+        let retryCount = 0;
+        
+        async function generate() {
+            const prompt = document.getElementById('prompt').value;
+            if (!prompt.trim()) {
+                showToast('error', 'Missing Prompt', 'Please enter a description');
+                return;
+            }
+            
+            lastPrompt = prompt;
+            retryCount = 0;
+            await attemptGeneration();
+        }
+        
+        async function attemptGeneration() {
+            const prompt = lastPrompt;
+            const loading = document.getElementById('loading');
+            const placeholder = document.getElementById('placeholder');
+            const errorDisplay = document.getElementById('error-display');
+            const imgEl = document.getElementById('preview-img');
+            const sendBtn = document.getElementById('sendToFilm');
+            
+            loading.classList.add('active');
+            placeholder.style.display = 'none';
+            errorDisplay.classList.remove('active');
+            imgEl.classList.add('hidden');
+            sendBtn.classList.remove('show');
+            
+            // Update agent status
+            const agentStatus = document.getElementById('agent-status');
+            agentStatus.textContent = `Active agents: ${activeAgents.join(', ')}`;
+            
+            try {
+                const endpoint = currentMode === 'image' ? '/api/flux/generate' : '/api/video/generate';
+                const body = currentMode === 'image' ? {
+                    prompt: prompt,
+                    model_name: document.getElementById('img-model').value,
+                    resolution: document.getElementById('img-res').value,
+                    steps: parseInt(document.getElementById('img-steps').value),
+                    guidance: parseFloat(document.getElementById('img-guidance').value),
+                    seed: -1,
+                    negative_prompt: ''
+                } : {
+                    prompt: prompt,
+                    model_name: document.getElementById('vid-model').value,
+                    duration: parseInt(document.getElementById('vid-dur').value),
+                    fps: parseInt(document.getElementById('vid-fps').value),
+                    seed: -1
+                };
+                
+                const response = await fetch('http://localhost:8000' + endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok || !data.success) {
+                    // Handle nested error objects - backend returns detail: {error, message, type}
+                    let errorMsg = 'Generation failed';
+                    if (data.detail) {
+                        if (typeof data.detail === 'object') {
+                            errorMsg = data.detail.error || data.detail.message || JSON.stringify(data.detail);
+                        } else {
+                            errorMsg = data.detail;
+                        }
+                    } else if (data.error) {
+                        errorMsg = typeof data.error === 'object' ? (data.error.message || JSON.stringify(data.error)) : data.error;
+                    }
+                    throw new Error(errorMsg);
+                }
+                
+                // Success
+                loading.classList.remove('active');
+                imgEl.src = 'http://localhost:8000' + data.url;
+                imgEl.classList.remove('hidden');
+                document.getElementById('previewBox').classList.add('has-content');
+                sendBtn.classList.add('show');
+                
+                showToast('success', 'Generation Complete', `${currentMode === 'image' ? 'Image' : 'Video'} generated successfully`);
+                
+                // Reset retry count
+                retryCount = 0;
+                
+            } catch (error) {
+                loading.classList.remove('active');
+                
+                // Check if retry bot is active
+                if (activeAgents.includes('retry') && retryCount < 3) {
+                    retryCount++;
+                    showToast('warning', 'Retrying...', `Attempt ${retryCount}/3 with error handler agent`);
+                    
+                    // Wait and retry
+                    setTimeout(() => attemptGeneration(), 2000);
+                    return;
+                }
+                
+                // Show error
+                errorDisplay.classList.add('active');
+                document.getElementById('error-message').textContent = error.message;
+                
+                showToast('error', 'Generation Failed', error.message);
+            }
+        }
+        
+        function retryGeneration() {
+            // Activate error handler if not already
+            if (!activeAgents.includes('error')) {
+                activeAgents.push('error');
+            }
+            retryCount = 0;
+            attemptGeneration();
+        }
+        
+        // ==================== SEND TO FILM ====================
+        function sendToFilm() {
+            showToast('success', 'Sent to EDEN FILMS', 'Clip added to timeline');
+            showPage('films');
+        }
+        
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            showToast('info', 'EDEN V5 Ready', 'Agentic teams active. GPU scaling available.');
+            
+            // Check backend
+            fetch('http://localhost:8000/')
+                .then(r => r.ok ? showToast('success', 'Backend Connected', 'API ready on port 8000') : Promise.reject())
+                .catch(() => {
+                    showToast('error', 'Backend Offline', 'Start backend: python3 main.py', 10000);
+                    document.getElementById('status-badge').classList.add('error');
+                    document.getElementById('status-badge').textContent = '● OFFLINE';
+                });
+        });
+    </script>
+</body>
+</html>
