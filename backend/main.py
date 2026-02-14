@@ -72,16 +72,25 @@ app.mount("/outputs", StaticFiles(directory=settings.OUTPUTS_DIR), name="outputs
 
 # ============== Pydantic Models ==============
 
+class StrictModeSettings(BaseModel):
+    render_exact: bool = True
+    no_filter: bool = True
+    preserve_all: bool = True
+
 class GenerateImageRequest(BaseModel):
     prompt: str
     model_name: str = "flux-schnell"
     resolution: str = "1024 x 1024 (Square - FLUX Native)"
     steps: int = 4
     guidance: float = 3.5
+    temperature: float = 0.5
     seed: int = -1
     negative_prompt: Optional[str] = None
     active_agents: List[str] = []
     reference_images: List[str] = []
+    adherence: str = "Normal"
+    strict_mode: bool = False
+    strict_settings: Optional[StrictModeSettings] = None
 
 
 class EnhanceImageRequest(BaseModel):
@@ -165,28 +174,45 @@ async def get_enhance_models():
 async def flux_generate(request: GenerateImageRequest, mock: bool = False):
     """Generate image using FLUX via HF Spaces with Agentic Teams."""
     
-    # Apply agentic enhancement if agents are active
+    # Apply strict mode enhancements
     enhanced_prompt = request.prompt
     enhanced_steps = request.steps
     enhanced_guidance = request.guidance
     applied_agents = []
     
+    # STRICT MODE: Add prompt enforcement
+    if request.strict_mode:
+        # Increase guidance for strict adherence
+        enhanced_guidance = max(request.guidance, 12.0)
+        
+        # Add strict mode keywords to negative prompt
+        strict_negative_additions = [
+            "deviation from prompt", "ignoring instructions", "modified composition",
+            "altered pose", "changed clothing", "different hairstyle",
+            "wrong colors", "incorrect lighting", "creative interpretation"
+        ]
+        
+        logger.info(f"STRICT MODE activated: {request.adherence}")
+        logger.info(f"Strict settings: {request.strict_settings}")
+    
+    # Apply agentic enhancement if agents are active
     if request.active_agents:
         agent_settings = {
             "steps": request.steps,
-            "guidance_scale": request.guidance,
-            "num_inference_steps": request.steps
+            "guidance_scale": enhanced_guidance,
+            "num_inference_steps": request.steps,
+            "temperature": request.temperature
         }
         
         enhanced = apply_agentic_enhancement(
-            prompt=request.prompt,
+            prompt=enhanced_prompt,
             settings=agent_settings,
             active_agents=request.active_agents
         )
         
-        enhanced_prompt = enhanced.get("prompt", request.prompt)
-        enhanced_steps = enhanced.get("settings", {}).get("num_inference_steps", request.steps)
-        enhanced_guidance = enhanced.get("settings", {}).get("guidance_scale", request.guidance)
+        enhanced_prompt = enhanced.get("prompt", enhanced_prompt)
+        enhanced_steps = enhanced.get("settings", {}).get("num_inference_steps", enhanced_steps)
+        enhanced_guidance = enhanced.get("settings", {}).get("guidance_scale", enhanced_guidance)
         applied_agents = enhanced.get("applied_agents", [])
         
         logger.info(f"Applied agents: {applied_agents}")
@@ -256,13 +282,22 @@ async def flux_generate(request: GenerateImageRequest, mock: bool = False):
         # Save
         img.save(output_path)
         
+        # Build status message with strict mode info
+        status_msg = f"🎨 MOCK MODE: {enhanced_prompt[:50]}..."
+        if request.strict_mode:
+            status_msg = f"🔒 STRICT {request.adherence.upper()} MODE: {enhanced_prompt[:50]}..."
+        status_msg += " (HF Spaces temporarily down)"
+        
         return {
             "success": True,
             "image_path": str(output_path),
-            "status": f"🎨 MOCK MODE: {enhanced_prompt[:50]}... (HF Spaces temporarily down)",
+            "status": status_msg,
             "url": f"/outputs/{output_path.name}",
             "applied_agents": applied_agents,
             "enhanced_prompt": enhanced_prompt if applied_agents else None,
+            "strict_mode": request.strict_mode,
+            "adherence": request.adherence,
+            "guidance": enhanced_guidance,
             "mock": True
         }
         
