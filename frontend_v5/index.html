@@ -206,6 +206,22 @@
             transition: opacity 0.3s ease;
         }
         
+        /* Strict Mode Box */
+        .strict-mode-box {
+            background: rgba(239, 68, 68, 0.1) !important;
+            border: 2px solid var(--error-red) !important;
+            animation: strictPulse 2s ease-in-out infinite;
+        }
+        
+        .strict-mode-box.hidden {
+            display: none !important;
+        }
+        
+        @keyframes strictPulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(239, 68, 68, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); }
+        }
+        
         /* GPU Panel Modal */
         .modal-overlay {
             position: fixed;
@@ -1001,8 +1017,32 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                         <input type="range" id="img-steps" min="1" max="50" value="28" oninput="updateVal('steps-val', this.value)">
                     </div>
                     <div class="setting-box">
-                        <div class="setting-label">Guidance <span class="setting-value" id="guidance-val">5.0</span></div>
-                        <input type="range" id="img-guidance" min="1" max="20" step="0.5" value="5" oninput="updateVal('guidance-val', this.value)">
+                        <div class="setting-label">Guidance (CFG) <span class="setting-value" id="guidance-val">7.5</span></div>
+                        <input type="range" id="img-guidance" min="1" max="30" step="0.5" value="7.5" oninput="updateVal('guidance-val', this.value)">
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Temperature <span class="setting-value" id="temp-val">0.5</span></div>
+                        <input type="range" id="img-temp" min="0" max="2" step="0.1" value="0.5" oninput="updateVal('temp-val', this.value)">
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-label">Prompt Adherence <span class="setting-value" id="adherence-val">Strict</span></div>
+                        <select id="img-adherence" onchange="updateVal('adherence-val', this.value); updateStrictMode()">
+                            <option value="Loose">Loose (Creative)</option>
+                            <option value="Normal" selected>Normal</option>
+                            <option value="Strict">🔒 Strict (Exact)</option>
+                            <option value="Ultra">🔒🔒 ULTRA (No Deviation)</option>
+                        </select>
+                    </div>
+                    <div class="setting-box strict-mode-box" id="strict-mode-box" style="border-color: var(--error-red);">
+                        <div class="setting-label" style="color: var(--error-red);">🔒 STRICT MODE ACTIVE</div>
+                        <div style="font-size: 0.65rem; color: var(--text-secondary);">
+                            <input type="checkbox" id="strict-render-exact" checked style="margin-right: 4px;">
+                            Render EXACTLY as requested<br>
+                            <input type="checkbox" id="strict-no-filter" checked style="margin-right: 4px;">
+                            No content filtering<br>
+                            <input type="checkbox" id="strict-preserve-all" checked style="margin-right: 4px;">
+                            Preserve ALL prompt details
+                        </div>
                     </div>
                 </div>
                 
@@ -1338,6 +1378,32 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
             document.getElementById(id).textContent = val;
         }
         
+        function updateStrictMode() {
+            const adherence = document.getElementById('img-adherence').value;
+            const strictBox = document.getElementById('strict-mode-box');
+            const guidanceSlider = document.getElementById('img-guidance');
+            const guidanceVal = document.getElementById('guidance-val');
+            
+            if (adherence === 'Strict' || adherence === 'Ultra') {
+                strictBox.classList.remove('hidden');
+                // Auto-increase guidance for strict mode
+                if (parseFloat(guidanceSlider.value) < 10) {
+                    guidanceSlider.value = 12;
+                    guidanceVal.textContent = '12';
+                }
+            } else {
+                strictBox.classList.add('hidden');
+            }
+            
+            // Ultra mode - max settings
+            if (adherence === 'Ultra') {
+                guidanceSlider.value = 20;
+                guidanceVal.textContent = '20';
+                document.getElementById('img-temp').value = 0.1;
+                document.getElementById('temp-val').textContent = '0.1';
+            }
+        }
+        
         // ==================== GENERATION ====================
         let lastPrompt = '';
         let retryCount = 0;
@@ -1377,16 +1443,38 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
             
             try {
                 const endpoint = currentMode === 'image' ? '/api/flux/generate' : '/api/video/generate';
-                const body = currentMode === 'image' ? {
+                // Build image generation body with strict mode options
+                let imageBody = {
                     prompt: prompt,
                     model_name: document.getElementById('img-model').value,
                     resolution: document.getElementById('img-res').value,
                     steps: parseInt(document.getElementById('img-steps').value),
                     guidance: parseFloat(document.getElementById('img-guidance').value),
+                    temperature: parseFloat(document.getElementById('img-temp').value),
                     seed: -1,
                     negative_prompt: negative,
-                    active_agents: activeAgents
-                } : {
+                    active_agents: activeAgents,
+                    adherence: document.getElementById('img-adherence').value,
+                    strict_mode: document.getElementById('img-adherence').value === 'Strict' || document.getElementById('img-adherence').value === 'Ultra',
+                    strict_settings: {
+                        render_exact: document.getElementById('strict-render-exact')?.checked || false,
+                        no_filter: document.getElementById('strict-no-filter')?.checked || false,
+                        preserve_all: document.getElementById('strict-preserve-all')?.checked || false
+                    }
+                };
+                
+                // Add strict mode suffix to prompt if strict/ultra mode
+                const adherence = document.getElementById('img-adherence').value;
+                if (adherence === 'Strict' || adherence === 'Ultra') {
+                    const strictSuffix = adherence === 'Ultra' 
+                        ? '. CRITICAL: Render EXACTLY as described with ZERO deviation. Preserve ALL explicit details. Follow prompt LITERALLY.'
+                        : '. STRICT: Follow prompt exactly. Render all described elements precisely without modification or omission.';
+                    imageBody.prompt = imageBody.prompt + strictSuffix;
+                    imageBody.guidance = Math.max(imageBody.guidance, 12);
+                    imageBody.temperature = Math.min(imageBody.temperature, 0.5);
+                }
+                
+                const body = currentMode === 'image' ? imageBody : {
                     prompt: prompt,
                     model_name: document.getElementById('vid-model').value,
                     width: 832,
