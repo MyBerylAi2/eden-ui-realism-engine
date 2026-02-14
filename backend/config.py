@@ -99,7 +99,7 @@ def get_settings() -> Settings:
 
 
 # =============================================================================
-# IMAGE MODELS REGISTRY - FLUX Family
+# IMAGE MODELS REGISTRY - FLUX Family + Uncensored
 # =============================================================================
 IMAGE_MODELS: Dict[str, Dict[str, Any]] = {
     "flux-schnell": {
@@ -128,6 +128,16 @@ IMAGE_MODELS: Dict[str, Dict[str, Any]] = {
         "desc": "Quality king - 12B params, 30-60s, final renders",
         "type": "flux",
         "fast": False,
+    },
+    "flux-uncensored": {
+        "name": "🔥 FLUX.1-Uncensored (NSFW)",
+        "space": "AIBRUH/FLUX.1-Uncensored",
+        "steps": 28,
+        "guidance": 3.5,
+        "desc": "Uncensored FLUX - NSFW capable",
+        "type": "flux",
+        "fast": False,
+        "uncensored": True,
     },
 }
 
