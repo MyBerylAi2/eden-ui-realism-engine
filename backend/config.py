@@ -213,6 +213,46 @@ IMAGE_MODELS: Dict[str, Dict[str, Any]] = {
 }
 
 # =============================================================================
+# PINOKIO LOCAL MODELS - Auto-populated from Seagate
+# =============================================================================
+def get_pinokio_image_models() -> Dict[str, Dict[str, Any]]:
+    """Dynamically load Pinokio models from Seagate"""
+    pinokio_models = {}
+    seagate_path = Path("/media/letsgo/9361ec48-323e-44ae-84d5-9060ae68b5751/PINOKIO")
+    
+    if not seagate_path.exists():
+        return pinokio_models
+    
+    # Scan for model files
+    model_paths = [
+        seagate_path / "models",
+        seagate_path / "checkpoints", 
+        seagate_path / "drive" / "models",
+        seagate_path / "drive" / "checkpoints",
+    ]
+    
+    for model_dir in model_paths:
+        if model_dir.exists():
+            for model_file in model_dir.rglob("*.safetensors"):
+                model_id = f"pinokio-{model_file.stem[:30]}"
+                pinokio_models[model_id] = {
+                    "name": f"📦 Pinokio: {model_file.stem[:40]}",
+                    "path": str(model_file),
+                    "local": True,
+                    "source": "pinokio",
+                    "steps": 28,
+                    "guidance": 7.0,
+                    "desc": f"Local Pinokio model from {model_file.parent.name}",
+                    "type": "local",
+                }
+    
+    return pinokio_models
+
+# Merge Pinokio models
+PINOKIO_IMAGE_MODELS = get_pinokio_image_models()
+IMAGE_MODELS = {**IMAGE_MODELS, **PINOKIO_IMAGE_MODELS}
+
+# =============================================================================
 # IMAGE RESOLUTIONS - FLUX Native + Common Aspect Ratios
 # =============================================================================
 IMAGE_RESOLUTIONS: Dict[str, tuple] = {

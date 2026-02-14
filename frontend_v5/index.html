@@ -1060,6 +1060,9 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                                 <option value="pony-diffusion-v6">🔥🔥 Pony Diffusion V6 (NSFW King)</option>
                                 <option value="gemini-heretic-uncensored">🔥🔥 Gemini-Pro-Heretic (4B)</option>
                             </optgroup>
+                            <optgroup label="📦 PINOKIO (Seagate Local)" id="pinokio-models-group">
+                                <option value="scan-pinokio">🔍 Scan Pinokio Folder...</option>
+                            </optgroup>
                         </select>
                     </div>
                     <div class="setting-box">
@@ -1113,6 +1116,9 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                             <optgroup label="🦙 Ollama Local (Recommended)">
                                 <option value="ollama-llama3.2-vision" selected>🦙 Llama 3.2 Vision (11B)</option>
                                 <option value="ollama-hermes3">🦙 Hermes 3 (3B - Fast)</option>
+                            </optgroup>
+                            <optgroup label="📦 PINOKIO Video (Seagate)">
+                                <option value="pinokio-video-scan">🔍 Scan Pinokio Video Models...</option>
                             </optgroup>
                             <optgroup label="⚠️ HF Spaces (May Fail)">
                                 <option value="ltx-turbo">LTX-Video-Turbo</option>
@@ -1361,6 +1367,55 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                 showToast('error', 'Connection Error', 'Backend not reachable');
             }
         }
+        
+        // ==================== PINOKIO SCAN ====================
+        async function scanPinokioModels() {
+            showToast('info', 'Scanning Pinokio', 'Checking Seagate for models...');
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/pinokio/scan');
+                const data = await response.json();
+                
+                if (data.models && Object.keys(data.models).length > 0) {
+                    // Add found models to dropdown
+                    const select = document.getElementById('img-model');
+                    const pinokioGroup = document.getElementById('pinokio-models-group');
+                    
+                    // Clear existing scan option
+                    pinokioGroup.innerHTML = '';
+                    
+                    // Add each found model
+                    let count = 0;
+                    for (const [category, models] of Object.entries(data.models)) {
+                        for (const model of models) {
+                            const option = document.createElement('option');
+                            option.value = `pinokio-${model.name}`;
+                            option.textContent = `📦 ${model.name.substring(0, 40)}`;
+                            pinokioGroup.appendChild(option);
+                            count++;
+                        }
+                    }
+                    
+                    if (count === 0) {
+                        pinokioGroup.innerHTML = '<option disabled>No models found in Pinokio</option>';
+                        showToast('warning', 'No Models', 'Download models to /PINOKIO/models/ on Seagate');
+                    } else {
+                        showToast('success', 'Pinokio Models Found', `${count} models loaded from Seagate`);
+                    }
+                } else {
+                    showToast('warning', 'No Pinokio Models', 'Download models to /PINOKIO/models/ on Seagate');
+                }
+            } catch (error) {
+                showToast('error', 'Scan Failed', error.message);
+            }
+        }
+        
+        // Auto-scan on model dropdown change
+        document.getElementById('img-model')?.addEventListener('change', function() {
+            if (this.value === 'scan-pinokio') {
+                scanPinokioModels();
+            }
+        });
         
         // ==================== AGENTIC TEAMS ====================
         let activeAgents = ['kling'];

@@ -218,18 +218,45 @@ async def flux_generate(request: GenerateImageRequest, mock: bool = False):
         logger.info(f"Applied agents: {applied_agents}")
         logger.info(f"Enhanced prompt: {enhanced_prompt[:100]}...")
     
-    # REAL GENERATION - No mock mode
+    # REAL GENERATION - Check for Pinokio local models first
     try:
-        image_path, status = generate_image_fast(
-            prompt=enhanced_prompt,
-            model_name=request.model_name,
-            resolution=request.resolution,
-            steps=enhanced_steps,
-            guidance=enhanced_guidance,
-            seed=request.seed,
-            negative_prompt=request.negative_prompt or "",
-            hf_token=settings.HF_TOKEN
-        )
+        # Check if using Pinokio local model
+        if request.model_name.startswith("pinokio-"):
+            from pinokio_integration import generate_with_pinokio_model
+            from config import settings as app_settings
+            
+            # Find the model path
+            model_path = None
+            from config import IMAGE_MODELS
+            if request.model_name in IMAGE_MODELS:
+                model_path = IMAGE_MODELS[request.model_name].get("path")
+            
+            if model_path and Path(model_path).exists():
+                image_path, status = generate_with_pinokio_model(
+                    prompt=enhanced_prompt,
+                    model_path=model_path,
+                    output_dir=Path(app_settings.OUTPUTS_DIR),
+                    steps=enhanced_steps,
+                    guidance=enhanced_guidance,
+                    seed=request.seed
+                )
+            else:
+                raise HTTPException(
+                    status_code=404,
+                    detail={"error": f"Pinokio model not found: {request.model_name}", "message": "Run scan to refresh models"}
+                )
+        else:
+            # Use HF Spaces
+            image_path, status = generate_image_fast(
+                prompt=enhanced_prompt,
+                model_name=request.model_name,
+                resolution=request.resolution,
+                steps=enhanced_steps,
+                guidance=enhanced_guidance,
+                seed=request.seed,
+                negative_prompt=request.negative_prompt or "",
+                hf_token=settings.HF_TOKEN
+            )
         
         if not image_path:
             raise HTTPException(
@@ -585,6 +612,25 @@ async def pull_pinokio(request: PullPinokioRequest):
     """Clone Pinokio app from git."""
     result = pull_pinokio_app(request.git_url)
     return {"result": result}
+
+
+@app.get("/api/pinokio/scan")
+async def scan_pinokio():
+    """Scan Pinokio folders for available models."""
+    from pinokio_integration import scan_pinokio_models, get_pinokio_paths
+    
+    paths = get_pinokio_paths()
+    models = scan_pinokio_models()
+    
+    # Count total models
+    total = sum(len(m) for m in models.values())
+    
+    return {
+        "paths": [str(p) for p in paths],
+        "models": models,
+        "total": total,
+        "message": f"Found {total} models in Pinokio folders"
+    }
 
 
 # ----- Legacy Endpoints (keep for compatibility) -----
