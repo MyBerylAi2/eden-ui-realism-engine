@@ -4,6 +4,7 @@
 import React from 'react';
 import { Cpu, Zap, Wifi, WifiOff } from 'lucide-react';
 import useStore from '../hooks/useStore';
+import GPUScaler from './GPUScaler';
 
 const Header = () => {
   const { systemStatus } = useStore();
@@ -29,17 +30,15 @@ const Header = () => {
 
       {/* Status Indicators */}
       <div className="flex items-center gap-6">
+        {/* HF GPU Scaler */}
+        <GPUScaler spaceId="AIBRUH/video-studio" />
+
         {/* GPU Status */}
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${isGPUAvailable ? 'bg-[#2ed573] animate-pulse' : 'bg-[#ff4757]'}`} />
           <span className="text-sm text-[#a0a0b0]">
-            {isGPUAvailable ? systemStatus?.gpu?.name || 'GPU Ready' : 'CPU Mode'}
+            {isGPUAvailable ? 'Local GPU' : 'CPU Mode'}
           </span>
-          {isGPUAvailable && systemStatus?.gpu && (
-            <span className="text-xs text-[#a0a0b0]">
-              {Math.round(systemStatus.gpu.memory_allocated / 1024 / 1024 / 1024 * 100) / 100}GB / {Math.round(systemStatus.gpu.memory_total / 1024 / 1024 / 1024)}GB
-            </span>
-          )}
         </div>
 
         {/* API Status */}
@@ -53,12 +52,6 @@ const Header = () => {
             {systemStatus ? 'Connected' : 'Offline'}
           </span>
         </div>
-
-        {/* Quick Action */}
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#00d4aa]/10 border border-[#00d4aa]/30 text-[#00d4aa] hover:bg-[#00d4aa]/20 transition-all">
-          <Zap className="w-4 h-4" />
-          <span className="text-sm font-medium">Turbo Mode</span>
-        </button>
       </div>
     </header>
   );
