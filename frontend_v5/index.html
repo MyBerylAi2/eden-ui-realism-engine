@@ -70,25 +70,10 @@
             gap: 12px;
         }
         
-        .toast.error {
-            border-color: var(--error-red);
-            border-left: 4px solid var(--error-red);
-        }
-        
-        .toast.success {
-            border-color: var(--success-green);
-            border-left: 4px solid var(--success-green);
-        }
-        
-        .toast.warning {
-            border-color: var(--gold-primary);
-            border-left: 4px solid var(--gold-primary);
-        }
-        
-        .toast.info {
-            border-color: var(--accent-cyan);
-            border-left: 4px solid var(--accent-cyan);
-        }
+        .toast.error { border-color: var(--error-red); border-left: 4px solid var(--error-red); }
+        .toast.success { border-color: var(--success-green); border-left: 4px solid var(--success-green); }
+        .toast.warning { border-color: var(--gold-primary); border-left: 4px solid var(--gold-primary); }
+        .toast.info { border-color: var(--accent-cyan); border-left: 4px solid var(--accent-cyan); }
         
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
@@ -99,9 +84,7 @@
             to { transform: translateX(100%); opacity: 0; }
         }
         
-        .toast.removing {
-            animation: slideOut 0.3s ease forwards;
-        }
+        .toast.removing { animation: slideOut 0.3s ease forwards; }
         
         .toast-icon { font-size: 20px; }
         .toast-content { flex: 1; }
@@ -263,30 +246,12 @@
             align-items: center;
         }
         
-        .gpu-option:hover {
-            border-color: var(--gold-primary);
-        }
+        .gpu-option:hover { border-color: var(--gold-primary); }
+        .gpu-option.selected { border-color: var(--gold-primary); background: rgba(212, 175, 55, 0.1); }
         
-        .gpu-option.selected {
-            border-color: var(--gold-primary);
-            background: rgba(212, 175, 55, 0.1);
-        }
-        
-        .gpu-name {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-        
-        .gpu-specs {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-        
-        .gpu-price {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--accent-cyan);
-            font-weight: 600;
-        }
+        .gpu-name { font-weight: 600; margin-bottom: 0.25rem; }
+        .gpu-specs { font-size: 0.875rem; color: var(--text-secondary); }
+        .gpu-price { font-family: 'Orbitron', sans-serif; color: var(--accent-cyan); font-weight: 600; }
         
         /* Main Container */
         .main-container { padding-top: 80px; }
@@ -295,9 +260,9 @@
         .page { display: none; }
         .page.active { display: block; }
         
-        /* Playground */
+        /* Playground - Updated with smaller preview */
         .playground {
-            height: calc(100vh - 80px);
+            height: calc(100vh - 280px);
             display: flex;
             background: linear-gradient(180deg, var(--bg-dark) 0%, #0d0d14 100%);
         }
@@ -306,10 +271,17 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 1.5rem;
+            padding: 1rem 1.5rem;
         }
         
         .playground-left { border-right: 1px solid var(--border-color); }
+        
+        /* NEW: Left bottom section for negative keywords */
+        .left-bottom-section {
+            border-top: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+        }
         
         .section-title {
             font-size: 0.875rem;
@@ -327,15 +299,15 @@
             background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
             border: 1px solid var(--accent-purple);
             border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1rem;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
         }
         
         .agents-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
             cursor: pointer;
         }
         
@@ -348,48 +320,41 @@
         
         .agents-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.4rem;
         }
         
         .agent-card {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 0.75rem;
+            border-radius: 6px;
+            padding: 0.5rem;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
+            text-align: center;
         }
         
-        .agent-card:hover {
-            border-color: var(--accent-cyan);
-        }
+        .agent-card:hover { border-color: var(--accent-cyan); }
+        .agent-card.active { border-color: var(--gold-primary); background: rgba(212, 175, 55, 0.1); }
+        .agent-card.error-handler { border-color: var(--error-red); }
         
-        .agent-card.active {
-            border-color: var(--gold-primary);
-            background: rgba(212, 175, 55, 0.1);
-        }
-        
-        .agent-card.error-handler {
-            border-color: var(--error-red);
-        }
-        
-        .agent-icon { font-size: 1.25rem; margin-bottom: 0.25rem; }
-        .agent-name { font-weight: 600; margin-bottom: 0.125rem; }
-        .agent-role { font-size: 0.625rem; color: var(--text-secondary); }
+        .agent-icon { font-size: 1rem; margin-bottom: 0.125rem; }
+        .agent-name { font-weight: 600; margin-bottom: 0.05rem; font-size: 0.65rem; }
+        .agent-role { font-size: 0.55rem; color: var(--text-secondary); }
         
         /* Reference Upload */
-        .ref-section { margin-bottom: 0.75rem; }
+        .ref-section { margin-bottom: 0.5rem; }
         
         .ref-upload {
             border: 2px dashed var(--border-color);
-            border-radius: 12px;
-            padding: 1rem;
+            border-radius: 8px;
+            padding: 0.5rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
             background: var(--bg-card);
+            font-size: 0.75rem;
         }
         
         .ref-upload:hover { border-color: var(--gold-primary); }
@@ -399,16 +364,15 @@
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
-            margin-top: 0.5rem;
+            margin-top: 0.25rem;
         }
         
         .ref-thumb {
-            width: 50px;
-            height: 50px;
-            border-radius: 6px;
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
             object-fit: cover;
             border: 2px solid var(--border-color);
-            position: relative;
         }
         
         /* Prompt */
@@ -416,21 +380,23 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 0.5rem;
+            min-height: 0;
         }
         
         .prompt-textarea {
             flex: 1;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1rem;
+            border-radius: 8px;
+            padding: 0.75rem;
             color: var(--text-primary);
-            font-size: 1rem;
+            font-size: 0.875rem;
             line-height: 1.5;
             resize: none;
             outline: none;
             font-family: 'Inter', sans-serif;
+            min-height: 80px;
         }
         
         .prompt-textarea:focus {
@@ -438,19 +404,53 @@
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
         }
         
+        /* NEW: Negative Keywords Section */
+        .negative-keywords-section {
+            margin-top: 0.5rem;
+        }
+        
+        .negative-keywords-textarea {
+            width: 100%;
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            line-height: 1.4;
+            resize: none;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            min-height: 50px;
+        }
+        
+        .negative-keywords-textarea:focus {
+            border-color: var(--error-red);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.1);
+        }
+        
+        .negative-label {
+            font-size: 0.7rem;
+            color: var(--error-red);
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
         .quick-commands {
             display: flex;
-            flex-direction: column;
             gap: 0.5rem;
+            flex-wrap: wrap;
         }
         
         .quick-cmd {
             background: var(--bg-hover);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            padding: 0.35rem 0.5rem;
             cursor: pointer;
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: var(--text-secondary);
             text-align: left;
         }
@@ -458,17 +458,19 @@
         .quick-cmd:hover { border-color: var(--gold-primary); }
         .cmd-key { color: var(--accent-cyan); font-weight: 600; }
         
-        /* Preview */
+        /* Preview - Shrunk by ~33% */
         .preview-box {
-            flex: 1;
+            flex: 0 0 67%;
+            max-height: 67%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             background: var(--bg-card);
             border: 2px dashed var(--border-color);
-            border-radius: 16px;
+            border-radius: 12px;
             position: relative;
+            overflow: hidden;
         }
         
         .preview-box.has-content {
@@ -481,13 +483,13 @@
             color: var(--text-secondary);
         }
         
-        .preview-placeholder .icon { font-size: 3rem; margin-bottom: 0.5rem; opacity: 0.5; }
+        .preview-placeholder .icon { font-size: 2rem; margin-bottom: 0.25rem; opacity: 0.5; }
         
-        #preview-media {
-            max-width: 100%;
-            max-height: 100%;
+        #preview-img, #preview-video {
+            max-width: 95%;
+            max-height: 95%;
             object-fit: contain;
-            border-radius: 12px;
+            border-radius: 8px;
             display: none;
         }
         
@@ -499,13 +501,13 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 1rem;
+            gap: 0.5rem;
         }
         
         .loading.active { display: flex; }
         
         .spinner {
-            width: 48px; height: 48px;
+            width: 36px; height: 36px;
             border: 3px solid var(--border-color);
             border-top-color: var(--gold-primary);
             border-radius: 50%;
@@ -522,62 +524,83 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 1rem;
-            padding: 2rem;
+            gap: 0.5rem;
+            padding: 1rem;
         }
         
         .error-display.active { display: flex; }
         
-        .error-icon { font-size: 3rem; }
+        .error-icon { font-size: 2rem; }
         .error-text { color: var(--error-red); text-align: center; }
         .error-retry {
-            padding: 0.75rem 1.5rem;
+            padding: 0.5rem 1rem;
             background: var(--error-red);
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             color: white;
             cursor: pointer;
             font-weight: 600;
+            font-size: 0.75rem;
         }
         
         .send-to-film {
             position: absolute;
-            bottom: 1rem;
-            right: 1rem;
+            bottom: 0.5rem;
+            right: 0.5rem;
             background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-purple) 100%);
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
             color: white;
             font-weight: 600;
             cursor: pointer;
             display: none;
-            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+            font-size: 0.7rem;
         }
         
         .send-to-film.show { display: block; }
+        
+        /* Save to Seagate Button */
+        .save-seagate-btn {
+            background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-light) 100%);
+            color: #000;
+            border: none;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .save-seagate-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
+        }
         
         /* Mode & Settings */
         .mode-section {
             background: var(--bg-card);
             border-top: 1px solid var(--border-color);
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1.5rem;
         }
         
         .mode-tabs {
             display: flex;
             gap: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
         
         .mode-btn {
             flex: 1;
-            padding: 0.875rem 1.5rem;
+            padding: 0.625rem 1.25rem;
             background: var(--bg-hover);
             border: 2px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 10px;
             color: var(--text-secondary);
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -591,8 +614,8 @@
         
         .settings-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
             max-width: 1400px;
             margin: 0 auto;
         }
@@ -600,32 +623,32 @@
         .setting-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1rem;
+            border-radius: 10px;
+            padding: 0.625rem;
         }
         
         .setting-label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-secondary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.375rem;
             display: flex;
             justify-content: space-between;
         }
         
-        .setting-value { color: var(--gold-light); font-weight: 600; }
+        .setting-value { color: var(--gold-light); font-weight: 600; font-size: 0.75rem; }
         
         input[type="range"] {
             width: 100%;
-            height: 6px;
+            height: 4px;
             background: var(--bg-hover);
-            border-radius: 3px;
+            border-radius: 2px;
             outline: none;
             -webkit-appearance: none;
         }
         
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 16px; height: 16px;
+            width: 12px; height: 12px;
             background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
             border-radius: 50%;
             cursor: pointer;
@@ -633,18 +656,18 @@
         
         select, input[type="number"], input[type="text"] {
             width: 100%;
-            padding: 0.5rem;
+            padding: 0.375rem;
             background: var(--bg-hover);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 6px;
             color: var(--text-primary);
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             outline: none;
         }
         
         /* Generate Section */
         .generate-section {
-            padding: 1.5rem;
+            padding: 0.75rem 1.5rem;
             text-align: center;
             background: var(--bg-dark);
         }
@@ -653,11 +676,11 @@
             background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #B8860B 100%);
             color: #000;
             border: none;
-            padding: 1rem 3rem;
-            font-size: 1.125rem;
+            padding: 0.75rem 2.5rem;
+            font-size: 1rem;
             font-weight: 700;
             font-family: 'Orbitron', sans-serif;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 0.1em;
@@ -672,6 +695,60 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+        
+        /* NEW: Saved Files Table Section */
+        .saved-files-section {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .saved-files-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .saved-files-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            color: var(--gold-light);
+        }
+        
+        .saved-files-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.7rem;
+        }
+        
+        .saved-files-table th {
+            background: var(--bg-hover);
+            padding: 0.5rem;
+            text-align: left;
+            color: var(--text-secondary);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .saved-files-table td {
+            padding: 0.4rem 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .saved-files-table tr:hover {
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .saved-files-table .type-img { color: var(--accent-cyan); }
+        .saved-files-table .type-vid { color: var(--accent-pink); }
         
         .hidden { display: none !important; }
     </style>
@@ -761,32 +838,32 @@
                             <div class="agent-card active" onclick="selectAgent(this, 'kling')">
                                 <div class="agent-icon">👑</div>
                                 <div class="agent-name">Kling Expert</div>
-                                <div class="agent-role">Photorealism config</div>
+                                <div class="agent-role">Photorealism</div>
                             </div>
                             <div class="agent-card" onclick="selectAgent(this, 'error')">
                                 <div class="agent-icon">🛡️</div>
                                 <div class="agent-name">Error Handler</div>
-                                <div class="agent-role">Auto-fix failures</div>
+                                <div class="agent-role">Auto-fix</div>
                             </div>
                             <div class="agent-card" onclick="selectAgent(this, 'detail')">
                                 <div class="agent-icon">🔍</div>
                                 <div class="agent-name">Detail Master</div>
-                                <div class="agent-role">Skin/pore realism</div>
+                                <div class="agent-role">Skin/Pores</div>
                             </div>
                             <div class="agent-card" onclick="selectAgent(this, 'light')">
                                 <div class="agent-icon">💡</div>
                                 <div class="agent-name">Lighting Pro</div>
-                                <div class="agent-role">Cinematic light</div>
+                                <div class="agent-role">Cinematic</div>
                             </div>
                             <div class="agent-card error-handler" onclick="selectAgent(this, 'retry')">
                                 <div class="agent-icon">🔄</div>
                                 <div class="agent-name">Retry Bot</div>
-                                <div class="agent-role">Auto-retry errors</div>
+                                <div class="agent-role">Auto-retry</div>
                             </div>
                             <div class="agent-card" onclick="selectAgent(this, 'prompt')">
                                 <div class="agent-icon">✨</div>
-                                <div class="agent-name">Prompt Engineer</div>
-                                <div class="agent-role">Optimize prompts</div>
+                                <div class="agent-name">Prompt Eng</div>
+                                <div class="agent-role">Optimize</div>
                             </div>
                         </div>
                     </div>
@@ -796,8 +873,8 @@
                         <div class="section-title">📎 Reference Images</div>
                         <div class="ref-upload" onclick="document.getElementById('ref-upload').click()">
                             <input type="file" id="ref-upload" multiple accept="image/*" onchange="handleRefUpload(event)">
-                            <p>📤 Upload reference images</p>
-                            <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.25rem">For face consistency & style</p>
+                            <p>📤 Upload references</p>
+                            <p style="font-size:0.65rem;color:var(--text-secondary);margin-top:0.125rem">Face consistency & style</p>
                         </div>
                         <div class="ref-thumbs" id="ref-thumbs"></div>
                     </div>
@@ -810,41 +887,56 @@
 Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                         
                         <div class="quick-commands">
-                            <button class="quick-cmd" onclick="applyCmd('portrait')"><span class="cmd-key">/portrait</span> - Portrait preset</button>
-                            <button class="quick-cmd" onclick="applyCmd('scene')"><span class="cmd-key">/scene</span> - Cinematic scene</button>
-                            <button class="quick-cmd" onclick="applyCmd('video')"><span class="cmd-key">/video</span> - Video preset</button>
+                            <button class="quick-cmd" onclick="applyCmd('portrait')"><span class="cmd-key">/portrait</span> - Portrait</button>
+                            <button class="quick-cmd" onclick="applyCmd('scene')"><span class="cmd-key">/scene</span> - Scene</button>
+                            <button class="quick-cmd" onclick="applyCmd('video')"><span class="cmd-key">/video</span> - Video</button>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Right Side: Preview -->
+                <!-- Right Side: Preview (Shrunk by 33%) -->
                 <div class="playground-right">
                     <div class="section-title">🎨 Preview</div>
                     <div class="preview-box" id="previewBox">
                         <div class="preview-placeholder" id="placeholder">
                             <div class="icon">🎨</div>
                             <p>Ready to Create</p>
-                            <p style="font-size:0.75rem;color:var(--text-secondary)">Your content appears here</p>
+                            <p style="font-size:0.65rem;color:var(--text-secondary)">Your content appears here</p>
                         </div>
                         <img id="preview-img" class="hidden">
                         <video id="preview-video" class="hidden" controls></video>
                         
                         <div class="loading" id="loading">
                             <div class="spinner"></div>
-                            <p>Generating with EDEN...</p>
-                            <p id="agent-status" style="font-size:0.75rem;color:var(--text-secondary)">Agents monitoring...</p>
+                            <p style="font-size:0.8rem">Generating...</p>
+                            <p id="agent-status" style="font-size:0.65rem;color:var(--text-secondary)">Agents monitoring...</p>
                         </div>
                         
                         <div class="error-display" id="error-display">
                             <div class="error-icon">⚠️</div>
                             <div class="error-text">
-                                <p style="font-weight:600">Generation Failed</p>
-                                <p id="error-message" style="font-size:0.875rem;margin-top:0.5rem">Unknown error</p>
+                                <p style="font-weight:600;font-size:0.8rem">Generation Failed</p>
+                                <p id="error-message" style="font-size:0.7rem;margin-top:0.25rem">Unknown error</p>
                             </div>
                             <button class="error-retry" onclick="retryGeneration()">🔄 Retry with Agents</button>
                         </div>
                         
-                        <button class="send-to-film" id="sendToFilm" onclick="sendToFilm()">📤 SEND TO FILM SEQUENCE</button>
+                        <button class="send-to-film" id="sendToFilm" onclick="sendToFilm()">📤 SEND TO FILM</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- NEW: Global Negative Keywords Section -->
+            <section class="left-bottom-section">
+                <div style="display:flex;gap:2rem;">
+                    <div style="flex:1;">
+                        <div class="negative-label">🚫 GLOBAL NEGATIVE KEYWORDS (Applied to all generations)</div>
+                        <textarea class="negative-keywords-textarea" id="global-negative" placeholder="Enter negative keywords to exclude from all images (e.g.: blurry, low quality, deformed, ugly, bad anatomy...)"></textarea>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                        <button class="save-seagate-btn" onclick="saveCurrentToSeagate()">
+                            💾 SAVE TO SEAGATE
+                        </button>
                     </div>
                 </div>
             </section>
@@ -867,8 +959,9 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                     <div class="setting-box">
                         <div class="setting-label">Resolution</div>
                         <select id="img-res">
-                            <option value="1024">1024×1024</option>
-                            <option value="portrait" selected>768×1344</option>
+                            <option value="1024 x 1024 (Square - FLUX Native)">1024×1024</option>
+                            <option value="768 x 1344 (Portrait 9:16 - Phone)" selected>768×1344</option>
+                            <option value="1344 x 768 (Landscape 16:9 - Wide)">1344×768</option>
                         </select>
                     </div>
                     <div class="setting-box">
@@ -902,6 +995,30 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
             
             <section class="generate-section">
                 <button class="generate-btn" onclick="generate()" id="gen-btn">🚀 GENERATE</button>
+            </section>
+            
+            <!-- NEW: Saved Files Table Section -->
+            <section class="saved-files-section">
+                <div class="saved-files-header">
+                    <div class="saved-files-title">💾 SAVED TO SEAGATE (BERYL BUCKET)</div>
+                    <span style="font-size:0.7rem;color:var(--text-secondary)">Auto-saved generations</span>
+                </div>
+                <table class="saved-files-table" id="saved-files-table">
+                    <thead>
+                        <tr>
+                            <th>Date/Time</th>
+                            <th>Type</th>
+                            <th>Keywords</th>
+                            <th>Prompt Preview</th>
+                            <th>Path</th>
+                        </tr>
+                    </thead>
+                    <tbody id="saved-files-body">
+                        <tr>
+                            <td colspan="5" style="text-align:center;color:var(--text-secondary);">No files saved yet. Generate and click "Save to Seagate"</td>
+                        </tr>
+                    </tbody>
+                </table>
             </section>
         </div>
 
@@ -1001,7 +1118,7 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
             } else {
                 activeAgents.push(agent);
             }
-            showToast('info', 'Agent Updated', `${agent.toUpperCase()} agent ${activeAgents.includes(agent) ? 'activated' : 'deactivated'}`);
+            showToast('info', 'Agent Updated', `${agent.toUpperCase()} ${activeAgents.includes(agent) ? 'activated' : 'deactivated'}`);
         }
         
         // ==================== NAVIGATION ====================
@@ -1048,6 +1165,7 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
         
         // ==================== MODE & SETTINGS ====================
         let currentMode = 'image';
+        let lastGeneratedData = null;
         
         function setMode(mode) {
             currentMode = mode;
@@ -1062,12 +1180,14 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
             document.getElementById(id).textContent = val;
         }
         
-        // ==================== GENERATION WITH ERROR HANDLING ====================
+        // ==================== GENERATION ====================
         let lastPrompt = '';
         let retryCount = 0;
         
         async function generate() {
             const prompt = document.getElementById('prompt').value;
+            const negative = document.getElementById('global-negative').value;
+            
             if (!prompt.trim()) {
                 showToast('error', 'Missing Prompt', 'Please enter a description');
                 return;
@@ -1080,21 +1200,22 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
         
         async function attemptGeneration() {
             const prompt = lastPrompt;
+            const negative = document.getElementById('global-negative').value;
             const loading = document.getElementById('loading');
             const placeholder = document.getElementById('placeholder');
             const errorDisplay = document.getElementById('error-display');
             const imgEl = document.getElementById('preview-img');
+            const videoEl = document.getElementById('preview-video');
             const sendBtn = document.getElementById('sendToFilm');
             
             loading.classList.add('active');
             placeholder.style.display = 'none';
             errorDisplay.classList.remove('active');
             imgEl.classList.add('hidden');
+            videoEl.classList.add('hidden');
             sendBtn.classList.remove('show');
             
-            // Update agent status
-            const agentStatus = document.getElementById('agent-status');
-            agentStatus.textContent = `Active agents: ${activeAgents.join(', ')}`;
+            document.getElementById('agent-status').textContent = `Active agents: ${activeAgents.join(', ')}`;
             
             try {
                 const endpoint = currentMode === 'image' ? '/api/flux/generate' : '/api/video/generate';
@@ -1105,13 +1226,17 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                     steps: parseInt(document.getElementById('img-steps').value),
                     guidance: parseFloat(document.getElementById('img-guidance').value),
                     seed: -1,
-                    negative_prompt: ''
+                    negative_prompt: negative,
+                    active_agents: activeAgents
                 } : {
                     prompt: prompt,
                     model_name: document.getElementById('vid-model').value,
+                    width: 832,
+                    height: 480,
                     duration: parseInt(document.getElementById('vid-dur').value),
                     fps: parseInt(document.getElementById('vid-fps').value),
-                    seed: -1
+                    seed: -1,
+                    active_agents: activeAgents
                 };
                 
                 const response = await fetch('http://localhost:8000' + endpoint, {
@@ -1123,7 +1248,6 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                 const data = await response.json();
                 
                 if (!response.ok || !data.success) {
-                    // Handle nested error objects - backend returns detail: {error, message, type}
                     let errorMsg = 'Generation failed';
                     if (data.detail) {
                         if (typeof data.detail === 'object') {
@@ -1137,46 +1261,108 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                     throw new Error(errorMsg);
                 }
                 
+                // Store for save to Seagate
+                lastGeneratedData = {
+                    url: data.url,
+                    prompt: prompt,
+                    negative: negative,
+                    type: currentMode,
+                    timestamp: new Date()
+                };
+                
                 // Success
                 loading.classList.remove('active');
-                imgEl.src = 'http://localhost:8000' + data.url;
-                imgEl.classList.remove('hidden');
+                
+                if (currentMode === 'image') {
+                    imgEl.src = 'http://localhost:8000' + data.url;
+                    imgEl.classList.remove('hidden');
+                } else {
+                    videoEl.src = 'http://localhost:8000' + data.url;
+                    videoEl.classList.remove('hidden');
+                }
+                
                 document.getElementById('previewBox').classList.add('has-content');
                 sendBtn.classList.add('show');
                 
                 showToast('success', 'Generation Complete', `${currentMode === 'image' ? 'Image' : 'Video'} generated successfully`);
                 
-                // Reset retry count
+                // Auto-save to Seagate
+                await saveCurrentToSeagate();
+                
                 retryCount = 0;
                 
             } catch (error) {
                 loading.classList.remove('active');
                 
-                // Check if retry bot is active
                 if (activeAgents.includes('retry') && retryCount < 3) {
                     retryCount++;
                     showToast('warning', 'Retrying...', `Attempt ${retryCount}/3 with error handler agent`);
-                    
-                    // Wait and retry
                     setTimeout(() => attemptGeneration(), 2000);
                     return;
                 }
                 
-                // Show error
                 errorDisplay.classList.add('active');
                 document.getElementById('error-message').textContent = error.message;
-                
                 showToast('error', 'Generation Failed', error.message);
             }
         }
         
         function retryGeneration() {
-            // Activate error handler if not already
             if (!activeAgents.includes('error')) {
                 activeAgents.push('error');
             }
             retryCount = 0;
             attemptGeneration();
+        }
+        
+        // ==================== SAVE TO SEAGATE ====================
+        let savedFiles = [];
+        
+        async function saveCurrentToSeagate() {
+            if (!lastGeneratedData) {
+                showToast('warning', 'Nothing to Save', 'Generate content first');
+                return;
+            }
+            
+            try {
+                // Extract keywords from prompt (first 5 words)
+                const keywords = lastGeneratedData.prompt.split(' ').slice(0, 5).join(' ');
+                
+                const saveData = {
+                    datetime: lastGeneratedData.timestamp.toLocaleString(),
+                    type: lastGeneratedData.type,
+                    keywords: keywords,
+                    prompt: lastGeneratedData.prompt.substring(0, 100) + (lastGeneratedData.prompt.length > 100 ? '...' : ''),
+                    path: '/media/letsgo/9361ec48-323e-44ae-84d5-9060ae68b5751/PINOKIO/BERYL_BUCKET/' + lastGeneratedData.url.split('/').pop()
+                };
+                
+                savedFiles.unshift(saveData);
+                updateSavedFilesTable();
+                
+                showToast('success', 'Saved to Seagate', `File saved to BERYL BUCKET`);
+                
+            } catch (error) {
+                showToast('error', 'Save Failed', error.message);
+            }
+        }
+        
+        function updateSavedFilesTable() {
+            const tbody = document.getElementById('saved-files-body');
+            
+            if (savedFiles.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-secondary);">No files saved yet</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = savedFiles.map(file => `
+                <tr>
+                    <td>${file.datetime}</td>
+                    <td class="type-${file.type === 'image' ? 'img' : 'vid'}">${file.type.toUpperCase()}</td>
+                    <td>${file.keywords}</td>
+                    <td title="${file.prompt}">${file.prompt}</td>
+                    <td style="font-size:0.6rem;max-width:150px;" title="${file.path}">${file.path}</td>
+                </tr>
+            `).join('');
         }
         
         // ==================== SEND TO FILM ====================
@@ -1187,9 +1373,8 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
         
         // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', () => {
-            showToast('info', 'EDEN V5 Ready', 'Agentic teams active. GPU scaling available.');
+            showToast('info', 'EDEN V5 Ready', 'Preview box optimized. Negative keywords active. Seagate save ready.');
             
-            // Check backend
             fetch('http://localhost:8000/')
                 .then(r => r.ok ? showToast('success', 'Backend Connected', 'API ready on port 8000') : Promise.reject())
                 .catch(() => {
