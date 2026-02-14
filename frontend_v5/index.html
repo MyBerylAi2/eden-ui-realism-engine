@@ -1044,9 +1044,17 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                     <div class="setting-box">
                         <div class="setting-label">Model</div>
                         <select id="img-model">
-                            <option value="flux-schnell">FLUX.1-schnell</option>
-                            <option value="flux-dev" selected>FLUX.1-dev</option>
-                            <option value="flux-uncensored">🔥 FLUX.1-Uncensored (NSFW)</option>
+                            <optgroup label="FLUX Models">
+                                <option value="flux-schnell">FLUX.1-schnell</option>
+                                <option value="flux-dev" selected>FLUX.1-dev</option>
+                            </optgroup>
+                            <optgroup label="🔥 Uncensored / NSFW Models">
+                                <option value="flux-uncensored">🔥 FLUX.1-Uncensored</option>
+                                <option value="flux-lustly">🔥 FLUX-Lustly.ai</option>
+                                <option value="flux-enhance-uncensored">🔥 FLUX-Enhance-V2</option>
+                                <option value="illustrious-uncensored">🔥 Illustrious-XL Uncensored</option>
+                                <option value="realistic-vision-uncensored">🔥 Realistic Vision V6</option>
+                            </optgroup>
                         </select>
                     </div>
                     <div class="setting-box">
