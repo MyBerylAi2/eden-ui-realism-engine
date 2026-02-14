@@ -983,6 +983,66 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                             <button class="quick-cmd" onclick="applyCmd('scene')"><span class="cmd-key">/scene</span> - Scene</button>
                             <button class="quick-cmd" onclick="applyCmd('video')"><span class="cmd-key">/video</span> - Video</button>
                         </div>
+                        
+                        <!-- NEW: Prompt Generator -->
+                        <div class="prompt-generator" style="margin-top:0.75rem;padding:0.75rem;background:linear-gradient(135deg,rgba(212,175,55,0.1) 0%,rgba(255,107,157,0.1) 100%);border-radius:8px;border:1px solid var(--gold-primary);">
+                            <div style="font-size:0.7rem;color:var(--gold-light);font-weight:600;margin-bottom:0.5rem;">🔥 PROMPT GENERATOR - Ultra Realism</div>
+                            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+                                <select id="gen-ethnicity" style="flex:1;min-width:80px;background:var(--bg-hover);border:1px solid var(--border-color);border-radius:6px;padding:0.35rem;font-size:0.65rem;color:var(--text-primary);">
+                                    <option value="African American">African American</option>
+                                    <option value="Latina">Latina</option>
+                                    <option value="Asian">Asian</option>
+                                    <option value="White">White</option>
+                                    <option value="Arab">Arab</option>
+                                    <option value="Mixed">Mixed</option>
+                                </select>
+                                <select id="gen-body" style="flex:1;min-width:80px;background:var(--bg-hover);border:1px solid var(--border-color);border-radius:6px;padding:0.35rem;font-size:0.65rem;color:var(--text-primary);">
+                                    <option value="thick voluptuous">Thick Voluptuous</option>
+                                    <option value="slim curvy">Slim Curvy</option>
+                                    <option value="bbw">BBW</option>
+                                    <option value="fit athletic">Fit Athletic</option>
+                                    <option value="petite">Petite</option>
+                                </select>
+                                <select id="gen-position" style="flex:1;min-width:80px;background:var(--bg-hover);border:1px solid var(--border-color);border-radius:6px;padding:0.35rem;font-size:0.65rem;color:var(--text-primary);">
+                                    <option value="doggy style">Doggy Style</option>
+                                    <option value="reverse cowgirl">Reverse Cowgirl</option>
+                                    <option value="missionary">Missionary</option>
+                                    <option value="cowgirl">Cowgirl</option>
+                                    <option value="prone bone">Prone Bone</option>
+                                    <option value="standing">Standing</option>
+                                    <option value="gangbang">Gangbang</option>
+                                    <option value="double penetration">Double Penetration</option>
+                                    <option value="face fuck">Face Fuck</option>
+                                </select>
+                            </div>
+                            <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;">
+                                <select id="gen-location" style="flex:1;background:var(--bg-hover);border:1px solid var(--border-color);border-radius:6px;padding:0.35rem;font-size:0.65rem;color:var(--text-primary);">
+                                    <option value="bedroom">Bedroom</option>
+                                    <option value="hotel room">Hotel Room</option>
+                                    <option value="bathroom">Bathroom</option>
+                                    <option value="kitchen">Kitchen</option>
+                                    <option value="living room">Living Room</option>
+                                    <option value="club">Club</option>
+                                    <option value="alley">Alley</option>
+                                    <option value="balcony">Balcony</option>
+                                    <option value="car">Car</option>
+                                    <option value="office">Office</option>
+                                </select>
+                                <select id="gen-feature" style="flex:1;background:var(--bg-hover);border:1px solid var(--border-color);border-radius:6px;padding:0.35rem;font-size:0.65rem;color:var(--text-primary);">
+                                    <option value="creampie">Creampie</option>
+                                    <option value="cum swallow">Cum Swallow</option>
+                                    <option value="facial">Facial</option>
+                                    <option value="squirting">Squirting</option>
+                                    <option value="oiled up">Oiled Up</option>
+                                    <option value="lingerie">Lingerie</option>
+                                    <option value="nude">Fully Nude</option>
+                                    <option value="anal">Anal</option>
+                                </select>
+                            </div>
+                            <button onclick="generateSmokingHot()" style="width:100%;padding:0.5rem;background:linear-gradient(135deg,var(--gold-primary) 0%,var(--accent-pink) 100%);border:none;border-radius:6px;color:#000;font-weight:700;font-size:0.75rem;cursor:pointer;text-transform:uppercase;">
+                                🔥 GENERATE SMOKING HOT PROMPT
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
@@ -1124,6 +1184,26 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
             
             <section class="generate-section">
                 <button class="generate-btn" onclick="generate()" id="gen-btn">🚀 GENERATE</button>
+            </section>
+            
+            <!-- NEW: Endless Generator -->
+            <section class="generate-section" style="padding-top:0;background:linear-gradient(180deg,var(--bg-dark) 0%,rgba(212,175,55,0.05) 100%);">
+                <div style="display:flex;gap:0.5rem;justify-content:center;align-items:center;flex-wrap:wrap;">
+                    <button onclick="startEndlessGeneration()" id="endless-btn" style="padding:0.6rem 1.2rem;background:linear-gradient(135deg,var(--accent-pink) 0%,var(--error-red) 100%);border:none;border-radius:8px;color:#fff;font-weight:700;font-size:0.8rem;cursor:pointer;">
+                        ♾️ START ENDLESS GENERATOR
+                    </button>
+                    <button onclick="stopEndlessGeneration()" id="stop-endless-btn" style="display:none;padding:0.6rem 1.2rem;background:var(--bg-hover);border:2px solid var(--error-red);border-radius:8px;color:var(--error-red);font-weight:700;font-size:0.8rem;cursor:pointer;">
+                        ⏹ STOP
+                    </button>
+                    <select id="endless-count" style="padding:0.5rem;background:var(--bg-hover);border:1px solid var(--border-color);border-radius:6px;color:var(--text-primary);font-size:0.7rem;">
+                        <option value="5">5 images</option>
+                        <option value="10" selected>10 images</option>
+                        <option value="20">20 images</option>
+                        <option value="50">50 images</option>
+                        <option value="100">100 images</option>
+                    </select>
+                </div>
+                <p id="endless-status" style="font-size:0.65rem;color:var(--text-secondary);margin-top:0.5rem;text-align:center;"></p>
             </section>
             
             <!-- NEW: Saved Files Table Section -->
@@ -1506,6 +1586,110 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                 document.getElementById('img-temp').value = 0.1;
                 document.getElementById('temp-val').textContent = '0.1';
             }
+        }
+        
+        // ==================== PROMPT GENERATOR ====================
+        function generateSmokingHot() {
+            const ethnicity = document.getElementById('gen-ethnicity').value;
+            const body = document.getElementById('gen-body').value;
+            const position = document.getElementById('gen-position').value;
+            const location = document.getElementById('gen-location').value;
+            const feature = document.getElementById('gen-feature').value;
+            
+            // Descriptive variations
+            const faces = ['breathtakingly gorgeous', 'stunningly beautiful', 'extremely attractive', 'jaw-dropping', 'absolutely stunning', 'drop-dead gorgeous'];
+            const breastSizes = ['massive natural tits', 'huge perky breasts', 'enormous fake tits', 'gigantic natural breasts', 'massive oiled-up tits', 'huge fake boobs'];
+            const assTypes = ['gigantic bubble ass', 'phat round booty', 'huge jiggly ass', 'massive oiled ass', 'gigantic thick ass', 'fat perfect ass'];
+            const skinTones = ['flawless mahogany skin', 'glowing chocolate skin', 'smooth caramel skin', 'perfect ebony skin', 'rich dark skin', 'lustrous brown skin'];
+            const expressions = ['pure ecstasy', 'intense pleasure', 'overwhelming bliss', 'raw ecstasy', 'uncontrollable pleasure'];
+            const actions = ['getting pounded hard', 'getting railed deep', 'being destroyed by', 'taking every inch from', 'getting fucked senseless by'];
+            
+            const face = faces[Math.floor(Math.random() * faces.length)];
+            const breasts = breastSizes[Math.floor(Math.random() * breastSizes.length)];
+            const ass = assTypes[Math.floor(Math.random() * assTypes.length)];
+            const skin = skinTones[Math.floor(Math.random() * skinTones.length)];
+            const expression = expressions[Math.floor(Math.random() * expressions.length)];
+            const action = actions[Math.floor(Math.random() * actions.length)];
+            
+            // Build prompt
+            let prompt = `A ${face} ${ethnicity} woman with ${body} body, ${breasts} and ${ass}, ${skin}, is ${action} in ${position} position in the ${location}. Her face shows ${expression}—mouth open moaning, eyes rolling back—as ${feature} happens. Photorealistic, 8K, cinematic lighting, hyper-detailed skin texture, sweat droplets, motion blur on action.`;
+            
+            document.getElementById('prompt').value = prompt;
+            
+            // Auto-set optimal settings for realism
+            document.getElementById('img-steps').value = 45;
+            document.getElementById('steps-val').textContent = '45';
+            document.getElementById('img-guidance').value = 9;
+            document.getElementById('guidance-val').textContent = '9';
+            document.getElementById('img-adherence').value = 'Ultra';
+            document.getElementById('adherence-val').textContent = 'Ultra';
+            updateStrictMode();
+            
+            // Set negative keywords for realism
+            const realismNegatives = "cartoon, anime, 3d render, drawing, painting, illustration, fake, plastic skin, airbrushed, smooth skin filter, doll-like, mannequin, blurry, low quality, watermark, text, signature, cropped, out of frame, extra limbs, deformed, disfigured, mutation, mutated, bad anatomy, bad proportions, duplicate, morbid, mutilated, cut off, floating limbs, disconnected limbs, bad hands, bad fingers, extra fingers, mutated hands, poorly drawn face, poorly drawn hands";
+            document.getElementById('global-negative').value = realismNegatives;
+            
+            showToast('success', '🔥 Smoking Hot Prompt Generated', 'Ultra realism settings applied. 45 steps, CFG 9, Ultra mode active.');
+        }
+        
+        // ==================== ENDLESS GENERATOR ====================
+        let endlessRunning = false;
+        let endlessCount = 0;
+        let endlessTarget = 10;
+        let endlessInterval = null;
+        
+        async function startEndlessGeneration() {
+            if (endlessRunning) return;
+            
+            endlessTarget = parseInt(document.getElementById('endless-count').value);
+            endlessCount = 0;
+            endlessRunning = true;
+            
+            document.getElementById('endless-btn').style.display = 'none';
+            document.getElementById('stop-endless-btn').style.display = 'inline-block';
+            document.getElementById('endless-status').textContent = `Generating 0/${endlessTarget}...`;
+            
+            showToast('info', '♾️ Endless Generator Started', `Will generate ${endlessTarget} smoking hot images`);
+            
+            // Generate first immediately
+            await generateNextEndless();
+            
+            // Then continue with interval
+            endlessInterval = setInterval(async () => {
+                if (!endlessRunning || endlessCount >= endlessTarget) {
+                    stopEndlessGeneration();
+                    return;
+                }
+                await generateNextEndless();
+            }, 3000); // 3 second delay between generations
+        }
+        
+        async function generateNextEndless() {
+            // Generate new smoking hot prompt
+            generateSmokingHot();
+            
+            // Wait a moment for prompt to update then generate
+            setTimeout(async () => {
+                await generate();
+                endlessCount++;
+                document.getElementById('endless-status').textContent = `Generated ${endlessCount}/${endlessTarget}`;
+                
+                if (endlessCount >= endlessTarget) {
+                    stopEndlessGeneration();
+                    showToast('success', '♾️ Endless Complete', `${endlessCount} images generated!`);
+                }
+            }, 500);
+        }
+        
+        function stopEndlessGeneration() {
+            endlessRunning = false;
+            if (endlessInterval) {
+                clearInterval(endlessInterval);
+                endlessInterval = null;
+            }
+            document.getElementById('endless-btn').style.display = 'inline-block';
+            document.getElementById('stop-endless-btn').style.display = 'none';
+            document.getElementById('endless-status').textContent = `Completed ${endlessCount} generations`;
         }
         
         // ==================== GENERATION ====================
