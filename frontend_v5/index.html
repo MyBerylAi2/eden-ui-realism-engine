@@ -498,10 +498,10 @@
         .quick-cmd:hover { border-color: var(--gold-primary); }
         .cmd-key { color: var(--accent-cyan); font-weight: 600; }
         
-        /* Preview - Shrunk by ~33% */
+        /* Preview - Increased 25% from 67% to 84% */
         .preview-box {
-            flex: 0 0 67%;
-            max-height: 67%;
+            flex: 0 0 84%;
+            max-height: 84%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -531,6 +531,51 @@
             object-fit: contain;
             border-radius: 8px;
             display: block;
+            cursor: zoom-in;
+            transition: transform 0.2s ease;
+        }
+        
+        #preview-img:hover, #preview-video:hover {
+            transform: scale(1.02);
+        }
+        
+        /* Lightbox for enlarged view */
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            cursor: zoom-out;
+        }
+        
+        .lightbox-overlay.active {
+            display: flex;
+        }
+        
+        .lightbox-img {
+            max-width: 95vw;
+            max-height: 95vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        .lightbox-close:hover {
+            opacity: 1;
         }
         
         #preview-img.hidden, #preview-video.hidden {
@@ -1647,7 +1692,48 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                     }
                 })
                 .catch(() => console.log('Could not check GPU status'));
+            
+            // Setup lightbox click handlers
+            document.getElementById('preview-img').addEventListener('click', function() {
+                if (!this.classList.contains('hidden') && this.src) {
+                    openLightbox(this.src);
+                }
+            });
+            
+            document.getElementById('preview-video').addEventListener('click', function() {
+                if (!this.classList.contains('hidden') && this.src) {
+                    openLightbox(this.src);
+                }
+            });
+        });
+        
+        // Lightbox functions
+        function openLightbox(src) {
+            const overlay = document.getElementById('lightbox-overlay');
+            const img = document.getElementById('lightbox-img');
+            img.src = src;
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeLightbox() {
+            const overlay = document.getElementById('lightbox-overlay');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        // Close on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
         });
     </script>
+    
+    <!-- Lightbox Overlay -->
+    <div class="lightbox-overlay" id="lightbox-overlay" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="Enlarged view">
+    </div>
 </body>
 </html>
