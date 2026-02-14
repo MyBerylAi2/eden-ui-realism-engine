@@ -1030,6 +1030,9 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                                 </select>
                                 <select id="gen-feature" style="flex:1;background:var(--bg-hover);border:1px solid var(--border-color);border-radius:6px;padding:0.35rem;font-size:0.65rem;color:var(--text-primary);">
                                     <option value="creampie">Creampie</option>
+                                    <option value="taboo">🔥 Taboo</option>
+                                    <option value="free use">🔥 Free Use</option>
+                                    <option value="step fantasy">🔥 Step Fantasy</option>
                                     <option value="cum swallow">Cum Swallow</option>
                                     <option value="facial">Facial</option>
                                     <option value="squirting">Squirting</option>
@@ -1611,8 +1614,25 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
             const expression = expressions[Math.floor(Math.random() * expressions.length)];
             const action = actions[Math.floor(Math.random() * actions.length)];
             
+            // Feature-specific descriptions
+            const featureDescriptions = {
+                'creampie': 'thick cum floods her pussy and drips out',
+                'taboo': 'forbidden passionate encounter with intense eye contact',
+                'free use': 'she submits completely, available for anytime pleasure, fully servicing',
+                'step fantasy': 'intense family play scenario, naughty step relation secret encounter',
+                'cum swallow': 'she eagerly gulps down every drop of thick cum',
+                'facial': 'ropes of cum coat her pretty face and tits',
+                'squirting': 'her pussy erupts in powerful squirting orgasm',
+                'oiled up': 'shiny glistening oil covers her entire body making skin gleam',
+                'lingerie': 'sexy lace lingerie barely containing her curves',
+                'nude': 'completely naked showing everything',
+                'anal': 'tight ass getting stretched and filled deep'
+            };
+            
+            const featureDesc = featureDescriptions[feature] || feature + ' happens';
+            
             // Build prompt
-            let prompt = `A ${face} ${ethnicity} woman with ${body} body, ${breasts} and ${ass}, ${skin}, is ${action} in ${position} position in the ${location}. Her face shows ${expression}—mouth open moaning, eyes rolling back—as ${feature} happens. Photorealistic, 8K, cinematic lighting, hyper-detailed skin texture, sweat droplets, motion blur on action.`;
+            let prompt = `A ${face} ${ethnicity} woman with ${body} body, ${breasts} and ${ass}, ${skin}, is ${action} in ${position} position in the ${location}. Her face shows ${expression}—mouth open moaning, eyes rolling back—as ${featureDesc}. Photorealistic, 8K, cinematic lighting, hyper-detailed skin texture, sweat droplets, motion blur on action.`;
             
             document.getElementById('prompt').value = prompt;
             
