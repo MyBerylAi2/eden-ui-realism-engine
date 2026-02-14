@@ -218,97 +218,44 @@ async def flux_generate(request: GenerateImageRequest, mock: bool = False):
         logger.info(f"Applied agents: {applied_agents}")
         logger.info(f"Enhanced prompt: {enhanced_prompt[:100]}...")
     
-    # MOCK MODE: HF Spaces are down, return a test image
-    if not mock:
-        try:
-            image_path, status = generate_image_fast(
-                prompt=enhanced_prompt,
-                model_name=request.model_name,
-                resolution=request.resolution,
-                steps=enhanced_steps,
-                guidance=enhanced_guidance,
-                seed=request.seed,
-                negative_prompt=request.negative_prompt or "",
-                hf_token=settings.HF_TOKEN
-            )
-            
-            if image_path:
-                return {
-                    "success": True,
-                    "image_path": image_path,
-                    "status": status,
-                    "url": f"/outputs/{Path(image_path).name}",
-                    "applied_agents": applied_agents,
-                    "enhanced_prompt": enhanced_prompt if applied_agents else None
-                }
-        except Exception as e:
-            logger.warning(f"HF Space failed: {e}, using mock mode")
-    
-    # FALLBACK: Create a simple test image
+    # REAL GENERATION - No mock mode
     try:
-        from PIL import Image, ImageDraw, ImageFont
-        import io
+        image_path, status = generate_image_fast(
+            prompt=enhanced_prompt,
+            model_name=request.model_name,
+            resolution=request.resolution,
+            steps=enhanced_steps,
+            guidance=enhanced_guidance,
+            seed=request.seed,
+            negative_prompt=request.negative_prompt or "",
+            hf_token=settings.HF_TOKEN
+        )
         
-        timestamp = int(time.time())
-        output_path = Path(settings.OUTPUTS_DIR) / f"eden_mock_{timestamp}.png"
-        
-        # Create a gradient image
-        width, height = 1024, 1024
-        img = Image.new('RGB', (width, height), color='#1a1a25')
-        draw = ImageDraw.Draw(img)
-        
-        # Draw gradient
-        for y in range(height):
-            r = int(26 + (212 - 26) * y / height)
-            g = int(26 + (175 - 26) * y / height)
-            b = int(37 + (55 - 37) * y / height)
-            draw.line([(0, y), (width, y)], fill=(r, g, b))
-        
-        # Add text
-        try:
-            font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 40)
-        except:
-            font = ImageFont.load_default()
-        
-        text = "EDEN MOCK\n(HF Spaces Down)"
-        bbox = draw.textbbox((0, 0), text, font=font)
-        text_width = bbox[2] - bbox[0]
-        text_height = bbox[3] - bbox[1]
-        x = (width - text_width) // 2
-        y = (height - text_height) // 2
-        
-        draw.text((x, y), text, fill='white', font=font, align='center')
-        
-        # Save
-        img.save(output_path)
-        
-        # Build status message with strict mode info
-        status_msg = f"🎨 MOCK MODE: {enhanced_prompt[:50]}..."
-        if request.strict_mode:
-            status_msg = f"🔒 STRICT {request.adherence.upper()} MODE: {enhanced_prompt[:50]}..."
-        status_msg += " (HF Spaces temporarily down)"
+        if not image_path:
+            raise HTTPException(
+                status_code=500,
+                detail={"error": status, "message": "Image generation failed"}
+            )
         
         return {
             "success": True,
-            "image_path": str(output_path),
-            "status": status_msg,
-            "url": f"/outputs/{output_path.name}",
+            "image_path": image_path,
+            "status": status,
+            "url": f"/outputs/{Path(image_path).name}",
             "applied_agents": applied_agents,
             "enhanced_prompt": enhanced_prompt if applied_agents else None,
             "strict_mode": request.strict_mode,
             "adherence": request.adherence,
-            "guidance": enhanced_guidance,
-            "mock": True
+            "guidance": enhanced_guidance
         }
         
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f"Mock generation failed: {e}")
+        logger.error(f"Image generation failed: {e}")
         raise HTTPException(
             status_code=500,
-            detail={
-                "error": str(e),
-                "message": "Both HF Spaces and mock mode failed"
-            }
+            detail={"error": str(e), "message": "Generation failed - try again"}
         )
 
 

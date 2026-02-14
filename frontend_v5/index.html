@@ -1055,6 +1055,12 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                                 <option value="illustrious-uncensored">🔥 Illustrious-XL Uncensored</option>
                                 <option value="realistic-vision-uncensored">🔥 Realistic Vision V6</option>
                             </optgroup>
+                            <optgroup label="🔥🔥 EXPLICIT / SEXUAL (Top Downloads)">
+                                <option value="wan2.1-sexual">🔥🔥 WAN2.1-Sexual (Most DLs)</option>
+                                <option value="pony-diffusion-v6">🔥🔥 Pony Diffusion V6 (NSFW King)</option>
+                                <option value="gemini-heretic-uncensored">🔥🔥 Gemini-Pro-Heretic (4B)</option>
+                                <option value="animagine-xl-uncensored">🔥🔥 Animagine XL 3.1 (Hentai)</option>
+                            </optgroup>
                         </select>
                     </div>
                     <div class="setting-box">
@@ -1094,7 +1100,9 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                             <input type="checkbox" id="strict-no-filter" checked style="margin-right: 4px;">
                             No content filtering<br>
                             <input type="checkbox" id="strict-preserve-all" checked style="margin-right: 4px;">
-                            Preserve ALL prompt details
+                            Preserve ALL prompt details<br>
+                            <input type="checkbox" id="strict-erotic" style="margin-right: 4px;">
+                            <span style="color: var(--accent-pink); font-weight: bold;">🔥 MAXIMUM EROTIC EXPOSURE</span>
                         </div>
                     </div>
                 </div>
@@ -1519,9 +1527,20 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                 // Add strict mode suffix to prompt if strict/ultra mode
                 const adherence = document.getElementById('img-adherence').value;
                 if (adherence === 'Strict' || adherence === 'Ultra') {
-                    const strictSuffix = adherence === 'Ultra' 
-                        ? '. CRITICAL: Render EXACTLY as described with ZERO deviation. Preserve ALL explicit details. Follow prompt LITERALLY.'
-                        : '. STRICT: Follow prompt exactly. Render all described elements precisely without modification or omission.';
+                    const eroticInstructions = document.getElementById('strict-erotic')?.checked;
+                    
+                    let strictSuffix;
+                    if (adherence === 'Ultra') {
+                        strictSuffix = '. CRITICAL: Render EXACTLY as described with ZERO deviation. Preserve ALL explicit details. Follow prompt LITERALLY. No censorship. No filtering. Render ALL content including nudity, sexual acts, and erotic scenes exactly as requested.';
+                        if (eroticInstructions) {
+                            strictSuffix += ' MAXIMUM EROTIC DETAIL: Expose all intimate areas fully. Show genitalia clearly. Render sexual acts with photorealistic detail. No clothing unless explicitly requested. Maximum skin exposure.';
+                        }
+                    } else {
+                        strictSuffix = '. STRICT: Follow prompt exactly. Render all described elements precisely without modification or omission. Allow adult content. No content filtering.';
+                        if (eroticInstructions) {
+                            strictSuffix += ' EROTIC MODE: Full nudity allowed. Expose intimate details. Sexual content permitted.';
+                        }
+                    }
                     imageBody.prompt = imageBody.prompt + strictSuffix;
                     imageBody.guidance = Math.max(imageBody.guidance, 12);
                     imageBody.temperature = Math.min(imageBody.temperature, 0.5);
