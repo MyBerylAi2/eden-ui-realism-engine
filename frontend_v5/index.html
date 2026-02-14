@@ -490,7 +490,11 @@
             max-height: 95%;
             object-fit: contain;
             border-radius: 8px;
-            display: none;
+            display: block;
+        }
+        
+        #preview-img.hidden, #preview-video.hidden {
+            display: none !important;
         }
         
         .loading {
@@ -978,8 +982,10 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                     <div class="setting-box">
                         <div class="setting-label">Video Model</div>
                         <select id="vid-model">
-                            <option value="wan-1.3b">Wan2.1-T2V-1.3B</option>
-                            <option value="wan-14b" selected>Wan2.1-T2V-14B</option>
+                            <option value="wan-t2v-1.3b">Wan2.1-T2V-1.3B</option>
+                            <option value="wan-t2v-14b" selected>Wan2.1-T2V-14B</option>
+                            <option value="wan2.1-uncensored">🔥 Wan2.1-Uncensored (NSFW)</option>
+                            <option value="ltx-video-uncensored">🔥 LTX-Video-Uncensored (NSFW)</option>
                         </select>
                     </div>
                     <div class="setting-box">

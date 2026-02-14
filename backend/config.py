@@ -175,7 +175,7 @@ ENHANCE_MODELS: Dict[str, Dict[str, Any]] = {
 }
 
 # =============================================================================
-# VIDEO MODELS - Wan2.1 Family
+# VIDEO MODELS - Wan2.1, LTX, and Uncensored Models
 # =============================================================================
 VIDEO_MODELS: Dict[str, Dict[str, Any]] = {
     "wan-t2v-1.3b": {
@@ -193,6 +193,18 @@ VIDEO_MODELS: Dict[str, Dict[str, Any]] = {
         "name": "Wan2.1-I2V-14B",
         "space": "Wan-AI/Wan2.1-I2V-14B",
         "desc": "Image-to-video animation",
+    },
+    "wan2.1-uncensored": {
+        "name": "Wan2.1-Uncensored",
+        "space": "AIBRUH/Wan2.1-Uncensored",
+        "desc": "Uncensored video generation (NSFW capable)",
+        "uncensored": True,
+    },
+    "ltx-video-uncensored": {
+        "name": "LTX-Video-Uncensored",
+        "space": "Lightricks/LTX-Video",
+        "desc": "LTX Video uncensored (NSFW capable)",
+        "uncensored": True,
     },
 }
 
