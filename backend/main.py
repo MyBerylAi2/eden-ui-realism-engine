@@ -91,6 +91,7 @@ class GenerateImageRequest(BaseModel):
     adherence: str = "Normal"
     strict_mode: bool = False
     strict_settings: Optional[StrictModeSettings] = None
+    raw_mode: bool = False  # 🔥 RAW MODE: Ignore HF errors and force generate
 
 
 class EnhanceImageRequest(BaseModel):
@@ -112,6 +113,7 @@ class GenerateVideoRequest(BaseModel):
     fps: int = 24
     seed: int = -1
     active_agents: List[str] = []
+    raw_mode: bool = False  # 🔥 RAW MODE: Ignore HF errors and force generate
 
 
 class GPUUpgradeRequest(BaseModel):
@@ -259,6 +261,41 @@ async def flux_generate(request: GenerateImageRequest, mock: bool = False):
             )
         
         if not image_path:
+            # 🔥 RAW MODE: Create placeholder on failure
+            if request.raw_mode:
+                from PIL import Image, ImageDraw, ImageFont
+                
+                timestamp = int(time.time())
+                output_path = Path(settings.OUTPUTS_DIR) / f"eden_raw_{timestamp}.png"
+                
+                img = Image.new('RGB', (1024, 1024), color=(20, 20, 20))
+                draw = ImageDraw.Draw(img)
+                
+                for i in range(4):
+                    draw.rectangle([i, i, 1023-i, 1023-i], outline=(212, 175, 55), width=1)
+                
+                try:
+                    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 32)
+                    small_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
+                except:
+                    font = ImageFont.load_default()
+                    small_font = font
+                
+                draw.text((512, 300), "🔥 RAW MODE", fill=(212, 175, 55), anchor="mm", font=font)
+                draw.text((512, 360), "Generation Failed - Placeholder Created", fill=(200, 200, 200), anchor="mm", font=small_font)
+                draw.text((512, 450), f"Status: {status[:80]}...", fill=(150, 150, 150), anchor="mm", font=small_font)
+                
+                img.save(output_path)
+                
+                return {
+                    "success": True,
+                    "image_path": str(output_path),
+                    "status": f"🔥 RAW MODE: Placeholder created - {status[:60]}...",
+                    "url": f"/outputs/{output_path.name}",
+                    "raw_mode": True,
+                    "applied_agents": applied_agents
+                }
+            
             raise HTTPException(
                 status_code=500,
                 detail={"error": status, "message": "Image generation failed"}
@@ -281,6 +318,57 @@ async def flux_generate(request: GenerateImageRequest, mock: bool = False):
     except Exception as e:
         error_str = str(e)
         logger.error(f"Image generation failed: {error_str}")
+        
+        # 🔥 RAW MODE: Ignore errors and return placeholder
+        if request.raw_mode:
+            from PIL import Image, ImageDraw, ImageFont
+            
+            timestamp = int(time.time())
+            output_path = Path(settings.OUTPUTS_DIR) / f"eden_raw_{timestamp}.png"
+            
+            # Create a placeholder image with error info
+            img = Image.new('RGB', (1024, 1024), color=(20, 20, 20))
+            draw = ImageDraw.Draw(img)
+            
+            # Draw border
+            for i in range(4):
+                draw.rectangle([i, i, 1023-i, 1023-i], outline=(212, 175, 55), width=1)
+            
+            # Draw text
+            try:
+                font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 32)
+                small_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
+            except:
+                font = ImageFont.load_default()
+                small_font = font
+            
+            # Title
+            draw.text((512, 300), "🔥 RAW MODE", fill=(212, 175, 55), anchor="mm", font=font)
+            draw.text((512, 360), "Error Ignored - Generation Bypassed", fill=(200, 200, 200), anchor="mm", font=small_font)
+            
+            # Prompt preview
+            prompt_preview = enhanced_prompt[:80] + "..." if len(enhanced_prompt) > 80 else enhanced_prompt
+            draw.text((512, 450), f"Prompt: {prompt_preview}", fill=(150, 150, 150), anchor="mm", font=small_font)
+            
+            # Error info
+            error_preview = error_str[:100] + "..." if len(error_str) > 100 else error_str
+            draw.text((512, 550), f"Error: {error_preview}", fill=(255, 107, 107), anchor="mm", font=small_font)
+            
+            # Footer
+            draw.text((512, 700), "RAW MODE allows you to continue despite errors", fill=(100, 100, 100), anchor="mm", font=small_font)
+            draw.text((512, 730), "Try a local model for actual generation", fill=(100, 100, 100), anchor="mm", font=small_font)
+            
+            img.save(output_path)
+            
+            return {
+                "success": True,
+                "image_path": str(output_path),
+                "status": f"🔥 RAW MODE: Error bypassed - {error_str[:60]}...",
+                "url": f"/outputs/{output_path.name}",
+                "raw_mode": True,
+                "error_bypassed": error_str,
+                "applied_agents": applied_agents
+            }
         
         # Check for HF authentication error
         if "401" in error_str or "Invalid username" in error_str or "authentication" in error_str.lower():
@@ -335,7 +423,7 @@ async def flux_3d(request: Generate3DRequest):
 
 @app.post("/api/video/generate")
 async def video_generate(request: GenerateVideoRequest):
-    """Generate video using Wan2.1 via HF Spaces with Agentic Teams."""
+    """Generate video using Ollama local models or HF Spaces with Agentic Teams."""
     try:
         # Apply agentic enhancement if agents are active
         enhanced_prompt = request.prompt
@@ -367,6 +455,30 @@ async def video_generate(request: GenerateVideoRequest):
         )
         
         if not video_path:
+            # RAW MODE: Try to create a placeholder anyway
+            if request.raw_mode:
+                from PIL import Image, ImageDraw, ImageFont
+                import io
+                
+                timestamp = int(time.time())
+                output_path = Path(settings.OUTPUTS_DIR) / f"eden_video_raw_{timestamp}.txt"
+                
+                with open(output_path, 'w') as f:
+                    f.write(f"RAW MODE VIDEO (Error ignored):\n")
+                    f.write(f"Prompt: {enhanced_prompt}\n")
+                    f.write(f"Original Error: {status}\n")
+                    f.write(f"Duration: {request.duration}s @ {request.fps}fps\n")
+                
+                return {
+                    "success": True,
+                    "video_path": str(output_path),
+                    "status": f"🔥 RAW MODE: Video description saved (error ignored)",
+                    "url": f"/outputs/{output_path.name}",
+                    "applied_agents": applied_agents,
+                    "raw_mode": True,
+                    "original_error": status
+                }
+            
             error_result = agent_network.process_error(status)
             strategy = error_result.get("recovery_strategy", {})
             
@@ -392,6 +504,26 @@ async def video_generate(request: GenerateVideoRequest):
         raise
     except Exception as e:
         logger.error(f"Video generation error: {str(e)}")
+        
+        # RAW MODE: Return success even on exception
+        if request.raw_mode:
+            timestamp = int(time.time())
+            output_path = Path(settings.OUTPUTS_DIR) / f"eden_video_raw_error_{timestamp}.txt"
+            
+            with open(output_path, 'w') as f:
+                f.write(f"RAW MODE - ERROR BYPASSED:\n")
+                f.write(f"Prompt: {request.prompt}\n")
+                f.write(f"Error: {str(e)}\n")
+            
+            return {
+                "success": True,
+                "video_path": str(output_path),
+                "status": f"🔥 RAW MODE: Error bypassed - {str(e)[:50]}...",
+                "url": f"/outputs/{output_path.name}",
+                "raw_mode": True,
+                "error_bypassed": str(e)
+            }
+        
         raise HTTPException(
             status_code=500,
             detail={
