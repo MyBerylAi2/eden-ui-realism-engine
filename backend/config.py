@@ -210,16 +210,6 @@ IMAGE_MODELS: Dict[str, Dict[str, Any]] = {
         "fast": False,
         "uncensored": True,
     },
-    "animagine-xl-uncensored": {
-        "name": "🔥🔥 Animagine XL 3.1 (Uncensored)",
-        "space": "cagliostrolab/animagine-xl-3.1",
-        "steps": 28,
-        "guidance": 7.0,
-        "desc": "Anime/hentai explicit content specialist",
-        "type": "sdxl",
-        "fast": False,
-        "uncensored": True,
-    },
 }
 
 # =============================================================================
