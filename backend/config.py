@@ -256,36 +256,29 @@ ENHANCE_MODELS: Dict[str, Dict[str, Any]] = {
 }
 
 # =============================================================================
-# VIDEO MODELS - Wan2.1, LTX, and Uncensored Models
+# VIDEO MODELS - Ollama Local & Working HF Spaces
 # =============================================================================
 VIDEO_MODELS: Dict[str, Dict[str, Any]] = {
-    "wan-t2v-1.3b": {
-        "name": "Wan2.1-T2V-1.3B",
-        "space": "Wan-AI/Wan2.1-T2V-1.3B",
-        "private_space": "AIBRUH/video-studio",
-        "desc": "Efficient text-to-video",
+    "ollama-llama3.2-vision": {
+        "name": "🦙 Llama 3.2 Vision (Ollama Local)",
+        "type": "ollama",
+        "model": "llama3.2-vision:11b",
+        "desc": "Local Ollama - uncensored capable",
+        "local": True,
     },
-    "wan-t2v-14b": {
-        "name": "Wan2.1-T2V-14B",
-        "space": "Wan-AI/Wan2.1-T2V-14B",
-        "desc": "High quality text-to-video",
+    "ollama-hermes3": {
+        "name": "🦙 Hermes 3 (Ollama Local)",
+        "type": "ollama",
+        "model": "hermes3:3b",
+        "desc": "Fast local Ollama - uncensored",
+        "local": True,
+        "fast": True,
     },
-    "wan-i2v-14b": {
-        "name": "Wan2.1-I2V-14B",
-        "space": "Wan-AI/Wan2.1-I2V-14B",
-        "desc": "Image-to-video animation",
-    },
-    "wan2.1-uncensored": {
-        "name": "Wan2.1-Uncensored",
-        "space": "AIBRUH/Wan2.1-Uncensored",
-        "desc": "Uncensored video generation (NSFW capable)",
-        "uncensored": True,
-    },
-    "ltx-video-uncensored": {
-        "name": "LTX-Video-Uncensored",
+    "ltx-turbo": {
+        "name": "LTX-Video-Turbo",
         "space": "alexnasa/ltx-2-TURBO",
-        "desc": "LTX Video Turbo - fast generation (NSFW capable)",
-        "uncensored": True,
+        "desc": "LTX Video Turbo via HF Space",
+        "type": "ltx",
     },
 }
 

@@ -29,7 +29,7 @@ from generation_engine import generation_engine
 from chat_engine import chat_engine
 from flux_engine import (
     generate_image_fast, enhance_image_realism, generate_3d_trellis,
-    generate_video_wan21, scan_seagate_model_library, pull_huggingface_model,
+    generate_video_local, scan_seagate_model_library, pull_huggingface_model,
     pull_ollama_model, pull_pinokio_app, OUTPUT_DIR
 )
 from hf_gpu_manager import gpu_manager
@@ -315,17 +315,14 @@ async def video_generate(request: GenerateVideoRequest):
             
             logger.info(f"Applied agents to video: {applied_agents}")
         
-        video_path, status = generate_video_wan21(
+        video_path, status = generate_video_local(
             prompt=enhanced_prompt,
             model_name=request.model_name,
             width=request.width,
             height=request.height,
             num_frames=request.duration * request.fps,
             fps=request.fps,
-            cfg_high=6.5,
-            cfg_low=4.0,
             seed=request.seed,
-            use_private=False,
             hf_token=settings.HF_TOKEN
         )
         
