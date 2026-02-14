@@ -1,0 +1,56 @@
+# EDEN UI REALISM ENGINE - Backend Dependencies
+# Core Framework
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+websockets==13.1
+python-multipart==0.0.12
+
+# ML/Diffusion
+torch>=2.3.0
+torchvision>=0.18.0
+torchaudio>=2.3.0
+diffusers>=0.32.0
+transformers>=4.47.0
+accelerate>=1.2.0
+safetensors>=0.4.5
+huggingface-hub>=0.27.0
+peft>=0.14.0
+xformers>=0.0.28
+
+# Image/Video Processing
+opencv-python>=4.10.0
+pillow>=10.4.0
+imageio[ffmpeg]>=2.36.0
+imageio-ffmpeg>=0.5.1
+av>=13.1.0
+
+# Model Management
+bitsandbytes>=0.45.0
+optimum>=1.23.0
+compel>=2.0.3
+controlnet-aux>=0.0.9
+
+# Database & Storage
+sqlalchemy>=2.0.36
+alembic>=1.14.0
+redis>=5.2.0
+aiofiles>=24.1.0
+
+# AI/LLM for Natural Language Chat
+openai>=1.57.0
+anthropic>=0.42.0
+langchain>=0.3.12
+langchain-community>=0.3.12
+
+# Utilities
+pydantic>=2.10.3
+pydantic-settings>=2.7.0
+python-dotenv>=1.0.1
+httpx>=0.28.0
+aiohttp>=3.11.10
+tenacity>=9.0.0
+pyyaml>=6.0.2
+orjson>=3.10.12
+
+# ComfyUI Integration (optional but recommended)
+# comfyui will be installed separately in a submodule
