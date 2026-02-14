@@ -1187,6 +1187,13 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
             
             <section class="generate-section">
                 <button class="generate-btn" onclick="generate()" id="gen-btn">🚀 GENERATE</button>
+                <div style="display:flex;justify-content:center;align-items:center;margin-top:0.75rem;gap:0.5rem;">
+                    <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;padding:0.35rem 0.75rem;background:var(--bg-hover);border:1px solid var(--border-color);border-radius:6px;font-size:0.7rem;color:var(--text-secondary);transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold-primary)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                        <input type="checkbox" id="raw-mode-toggle" style="accent-color:var(--gold-primary);">
+                        <span style="color:var(--gold-light);font-weight:600;">🔥 RAW MODE</span>
+                        <span style="opacity:0.8;">(Ignore HF errors, force generate)</span>
+                    </label>
+                </div>
             </section>
             
             <!-- NEW: Endless Generator -->
@@ -1793,6 +1800,12 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                     imageBody.temperature = Math.min(imageBody.temperature, 0.5);
                 }
                 
+                // Check if raw mode is enabled
+                const rawMode = document.getElementById('raw-mode-toggle')?.checked || false;
+                
+                // Add raw_mode to image body
+                imageBody.raw_mode = rawMode;
+                
                 const body = currentMode === 'image' ? imageBody : {
                     prompt: prompt,
                     model_name: document.getElementById('vid-model').value,
@@ -1801,7 +1814,8 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                     duration: parseInt(document.getElementById('vid-dur').value),
                     fps: parseInt(document.getElementById('vid-fps').value),
                     seed: -1,
-                    active_agents: activeAgents
+                    active_agents: activeAgents,
+                    raw_mode: rawMode
                 };
                 
                 const response = await fetch('http://localhost:8000' + endpoint, {

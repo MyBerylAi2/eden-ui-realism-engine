@@ -71,7 +71,8 @@ def generate_image_fast(
         
         # Try different API endpoints for different FLUX models
         # FLUX schnell uses different parameters than FLUX dev
-        if "schnell" in model_name:
+        # Use the resolved model's space to determine type, not the input model_name
+        if "schnell" in space_id:
             # FLUX schnell API - simpler, no guidance_scale
             result = client.predict(
                 prompt=full_prompt,
