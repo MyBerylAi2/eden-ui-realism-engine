@@ -820,6 +820,7 @@
             <button class="nav-tab" id="nav-films" onclick="showPage('films')">🎬 EDEN FILMS</button>
         </nav>
         <div class="header-right">
+            <div class="badge" onclick="activateOllama()" id="ollama-badge" style="border-color:#ff6b00;color:#ff6b00">🦙 OLLAMA</div>
             <div class="badge" onclick="openGpuModal()">⚡ SCALE GPU</div>
             <div class="badge" style="border-color:#666;color:#888">💾 BERYL</div>
             <div class="badge" id="status-badge" style="border-color:#22c55e;color:#22c55e">● ONLINE</div>
@@ -958,6 +959,7 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                         <select id="img-model">
                             <option value="flux-schnell">FLUX.1-schnell</option>
                             <option value="flux-dev" selected>FLUX.1-dev</option>
+                            <option value="flux-uncensored">🔥 FLUX.1-Uncensored (NSFW)</option>
                         </select>
                     </div>
                     <div class="setting-box">
@@ -989,8 +991,8 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                         </select>
                     </div>
                     <div class="setting-box">
-                        <div class="setting-label">Duration <span class="setting-value" id="dur-val">5s</span></div>
-                        <input type="range" id="vid-dur" min="2" max="10" value="5" oninput="updateVal('dur-val', this.value + 's')">
+                        <div class="setting-label">Duration <span class="setting-value" id="dur-val">15s</span></div>
+                        <input type="range" id="vid-dur" min="2" max="20" value="15" oninput="updateVal('dur-val', this.value + 's')">
                     </div>
                     <div class="setting-box">
                         <div class="setting-label">FPS <span class="setting-value" id="fps-val">24</span></div>
@@ -1104,6 +1106,43 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                 }
             } catch (error) {
                 showToast('error', 'Connection Error', 'Backend not reachable. Is port 8000 running?');
+            }
+        }
+        
+        // ==================== OLLAMA ACTIVATION ====================
+        let ollamaActive = false;
+        
+        async function activateOllama() {
+            const badge = document.getElementById('ollama-badge');
+            
+            if (ollamaActive) {
+                showToast('info', 'Ollama', 'Already active on Seagate');
+                return;
+            }
+            
+            showToast('info', 'Ollama', 'Activating from Seagate...');
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/ollama/activate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        seagate_path: '/media/letsgo/9361ec48-323e-44ae-84d5-9060ae68b5751/PINOKIO/ollama'
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    ollamaActive = true;
+                    badge.style.borderColor = '#22c55e';
+                    badge.style.color = '#22c55e';
+                    badge.textContent = '🦙 OLLAMA ●';
+                    showToast('success', 'Ollama Active', `Models available: ${data.models?.join(', ') || 'Ready'}`);
+                } else {
+                    showToast('error', 'Ollama Failed', data.error || 'Could not activate Ollama');
+                }
+            } catch (error) {
+                showToast('error', 'Connection Error', 'Backend not reachable');
             }
         }
         

@@ -453,6 +453,127 @@ async def get_active_upgrades():
     return {"upgrades": gpu_manager.get_active_upgrades()}
 
 
+# ----- Ollama Integration -----
+
+class OllamaActivateRequest(BaseModel):
+    seagate_path: str = "/media/letsgo/9361ec48-323e-44ae-84d5-9060ae68b5751/PINOKIO/ollama"
+
+
+@app.post("/api/ollama/activate")
+async def activate_ollama(request: OllamaActivateRequest):
+    """Activate Ollama from Seagate storage."""
+    import subprocess
+    import os
+    
+    try:
+        ollama_path = Path(request.seagate_path)
+        
+        # Check if Ollama binary exists in Seagate
+        ollama_bin = ollama_path / "bin" / "ollama"
+        if not ollama_bin.exists():
+            ollama_bin = ollama_path / "ollama"  # Try root level
+        
+        if ollama_bin.exists():
+            # Start Ollama from Seagate
+            env = os.environ.copy()
+            env["OLLAMA_MODELS"] = str(ollama_path / "models")
+            
+            # Check if already running
+            result = subprocess.run(
+                ["pgrep", "-f", "ollama serve"],
+                capture_output=True,
+                text=True
+            )
+            
+            if result.returncode == 0:
+                # Already running, get available models
+                models_result = subprocess.run(
+                    ["ollama", "list"],
+                    capture_output=True,
+                    text=True
+                )
+                models = []
+                if models_result.returncode == 0:
+                    lines = models_result.stdout.strip().split('\n')[1:]  # Skip header
+                    models = [line.split()[0] for line in lines if line.strip()]
+                
+                return {
+                    "success": True,
+                    "message": "Ollama already running from Seagate",
+                    "models": models,
+                    "path": str(ollama_bin)
+                }
+            
+            # Start Ollama
+            subprocess.Popen(
+                [str(ollama_bin), "serve"],
+                env=env,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                start_new_session=True
+            )
+            
+            return {
+                "success": True,
+                "message": "Ollama activated from Seagate",
+                "models": [],
+                "path": str(ollama_bin)
+            }
+        
+        # Fallback to system Ollama
+        result = subprocess.run(
+            ["which", "ollama"],
+            capture_output=True,
+            text=True
+        )
+        
+        if result.returncode == 0:
+            # Check if running
+            check = subprocess.run(
+                ["pgrep", "-f", "ollama serve"],
+                capture_output=True,
+                text=True
+            )
+            
+            if check.returncode != 0:
+                subprocess.Popen(
+                    ["ollama", "serve"],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    start_new_session=True
+                )
+            
+            # Get models
+            models_result = subprocess.run(
+                ["ollama", "list"],
+                capture_output=True,
+                text=True
+            )
+            models = []
+            if models_result.returncode == 0:
+                lines = models_result.stdout.strip().split('\n')[1:]
+                models = [line.split()[0] for line in lines if line.strip()]
+            
+            return {
+                "success": True,
+                "message": "Using system Ollama (Seagate copy not found)",
+                "models": models,
+                "path": "system"
+            }
+        
+        return {
+            "success": False,
+            "error": "Ollama not found on Seagate or system"
+        }
+        
+    except Exception as e:
+        logger.error(f"Ollama activation error: {str(e)}")
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
+
 # ----- Seagate Model Management -----
 
 @app.get("/api/seagate/scan")
