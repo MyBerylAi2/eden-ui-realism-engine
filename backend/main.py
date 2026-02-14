@@ -279,10 +279,23 @@ async def flux_generate(request: GenerateImageRequest, mock: bool = False):
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Image generation failed: {e}")
+        error_str = str(e)
+        logger.error(f"Image generation failed: {error_str}")
+        
+        # Check for HF authentication error
+        if "401" in error_str or "Invalid username" in error_str or "authentication" in error_str.lower():
+            raise HTTPException(
+                status_code=401,
+                detail={
+                    "error": "HF Authentication Required",
+                    "message": "HuggingFace login needed. Select 📦 LOCAL model or check HF token.",
+                    "hint": "Use 🔍 Scan Pinokio Folder to find local models that don't require HF auth"
+                }
+            )
+        
         raise HTTPException(
             status_code=500,
-            detail={"error": str(e), "message": "Generation failed - try again"}
+            detail={"error": error_str, "message": "Generation failed - try again"}
         )
 
 

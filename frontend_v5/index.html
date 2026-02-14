@@ -1044,24 +1044,18 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                     <div class="setting-box">
                         <div class="setting-label">Model</div>
                         <select id="img-model">
-                            <optgroup label="FLUX Models">
-                                <option value="flux-schnell">FLUX.1-schnell</option>
-                                <option value="flux-dev" selected>FLUX.1-dev</option>
+                            <optgroup label="📦 LOCAL / NO HF AUTH REQUIRED">
+                                <option value="scan-pinokio" selected>🔍 Scan Pinokio Folder First...</option>
                             </optgroup>
-                            <optgroup label="🔥 Uncensored / NSFW Models">
-                                <option value="flux-uncensored">🔥 FLUX.1-Uncensored</option>
-                                <option value="flux-lustly">🔥 FLUX-Lustly.ai</option>
-                                <option value="flux-enhance-uncensored">🔥 FLUX-Enhance-V2</option>
-                                <option value="illustrious-uncensored">🔥 Illustrious-XL Uncensored</option>
-                                <option value="realistic-vision-uncensored">🔥 Realistic Vision V6</option>
-                            </optgroup>
-                            <optgroup label="🔥🔥 EXPLICIT / SEXUAL (Top Downloads)">
-                                <option value="wan2.1-sexual">🔥🔥 WAN2.1-Sexual (Most DLs)</option>
-                                <option value="pony-diffusion-v6">🔥🔥 Pony Diffusion V6 (NSFW King)</option>
-                                <option value="gemini-heretic-uncensored">🔥🔥 Gemini-Pro-Heretic (4B)</option>
-                            </optgroup>
-                            <optgroup label="📦 PINOKIO (Seagate Local)" id="pinokio-models-group">
-                                <option value="scan-pinokio">🔍 Scan Pinokio Folder...</option>
+                            <optgroup label="⚠️ HF Spaces (Requires Auth)">
+                                <option value="flux-schnell">FLUX.1-schnell (HF)</option>
+                                <option value="flux-dev">FLUX.1-dev (HF)</option>
+                                <option value="flux-uncensored">🔥 FLUX.1-Uncensored (HF)</option>
+                                <option value="flux-lustly">🔥 FLUX-Lustly.ai (HF)</option>
+                                <option value="flux-enhance-uncensored">🔥 FLUX-Enhance-V2 (HF)</option>
+                                <option value="illustrious-uncensored">🔥 Illustrious-XL (HF)</option>
+                                <option value="realistic-vision-uncensored">🔥 Realistic Vision V6 (HF)</option>
+                                <option value="pony-diffusion-v6">🔥🔥 Pony Diffusion V6 (HF)</option>
                             </optgroup>
                         </select>
                     </div>
@@ -1111,18 +1105,10 @@ Tip: Use /portrait, /scene, or /video for quick presets"></textarea>
                 
                 <div class="settings-grid hidden" id="vid-settings">
                     <div class="setting-box">
-                        <div class="setting-label">Video Model</div>
+                        <div class="setting-label">Video Model (NO HF Auth Required)</div>
                         <select id="vid-model">
-                            <optgroup label="🦙 Ollama Local (Recommended)">
-                                <option value="ollama-llama3.2-vision" selected>🦙 Llama 3.2 Vision (11B)</option>
-                                <option value="ollama-hermes3">🦙 Hermes 3 (3B - Fast)</option>
-                            </optgroup>
-                            <optgroup label="📦 PINOKIO Video (Seagate)">
-                                <option value="pinokio-video-scan">🔍 Scan Pinokio Video Models...</option>
-                            </optgroup>
-                            <optgroup label="⚠️ HF Spaces (May Fail)">
-                                <option value="ltx-turbo">LTX-Video-Turbo</option>
-                            </optgroup>
+                            <option value="ollama-llama3.2-vision" selected>🦙 Llama 3.2 Vision (Local)</option>
+                            <option value="ollama-hermes3">🦙 Hermes 3 (Fast)</option>
                         </select>
                     </div>
                     <div class="setting-box">

@@ -296,29 +296,23 @@ ENHANCE_MODELS: Dict[str, Dict[str, Any]] = {
 }
 
 # =============================================================================
-# VIDEO MODELS - Ollama Local & Working HF Spaces
+# VIDEO MODELS - OLLAMA LOCAL ONLY (No HF Authentication Required)
 # =============================================================================
 VIDEO_MODELS: Dict[str, Dict[str, Any]] = {
     "ollama-llama3.2-vision": {
         "name": "🦙 Llama 3.2 Vision (Ollama Local)",
         "type": "ollama",
         "model": "llama3.2-vision:11b",
-        "desc": "Local Ollama - uncensored capable",
+        "desc": "Local Ollama - uncensored capable - NO HF AUTH",
         "local": True,
     },
     "ollama-hermes3": {
         "name": "🦙 Hermes 3 (Ollama Local)",
         "type": "ollama",
         "model": "hermes3:3b",
-        "desc": "Fast local Ollama - uncensored",
+        "desc": "Fast local Ollama - uncensored - NO HF AUTH",
         "local": True,
         "fast": True,
-    },
-    "ltx-turbo": {
-        "name": "LTX-Video-Turbo",
-        "space": "alexnasa/ltx-2-TURBO",
-        "desc": "LTX Video Turbo via HF Space",
-        "type": "ltx",
     },
 }
 
