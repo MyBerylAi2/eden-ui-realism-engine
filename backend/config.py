@@ -12,7 +12,7 @@ import os
 # SEAGATE STORAGE SETUP - Redirect ALL model downloads to external drive
 # =============================================================================
 # Try Seagate first, fall back to local storage if not available
-SEAGATE_PATH = "/media/letsgo/Seagate Backup Plus Drive/PINOKIO"
+SEAGATE_PATH = "/media/letsgo/9361ec48-323e-44ae-84d5-9060ae68b5751/PINOKIO"
 LOCAL_PATH = Path.home() / ".eden-ui"
 
 # Check if Seagate is available

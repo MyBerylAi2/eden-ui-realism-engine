@@ -72,7 +72,7 @@ def generate_image_fast(
         # Try different API endpoints for different FLUX models
         # FLUX schnell uses different parameters than FLUX dev
         # Use the resolved model's space to determine type, not the input model_name
-        if "schnell" in space_id:
+        if "schnell" in space_id or "klein" in space_id:
             # FLUX schnell API - simpler, no guidance_scale
             result = client.predict(
                 prompt=full_prompt,
@@ -155,7 +155,7 @@ def enhance_image_realism(
                 strength=strength,
                 guidance_scale=3.5,
                 num_inference_steps=28,
-                api_name="/img2img"
+                api_name="/infer"
             )
             
         elif model["type"] == "upscale":
@@ -168,7 +168,7 @@ def enhance_image_realism(
             result = client.predict(
                 image=handle_file(image_path),
                 scale=4,
-                face_enhance=True,
+                
                 api_name="/predict"
             )
             
@@ -221,7 +221,7 @@ def generate_3d_trellis(
         if not image_path or not Path(image_path).exists():
             return "", "❌ No image provided for 3D conversion"
         
-        space_id = "microsoft/TRELLIS.2-4B"
+        space_id = "microsoft/TRELLIS"
         if hf_token:
             headers = {"Authorization": f"Bearer {hf_token}"}
             client = Client(space_id, headers=headers)
@@ -231,7 +231,7 @@ def generate_3d_trellis(
         # Call TRELLIS.2 API
         result = client.predict(
             image=handle_file(image_path),
-            api_name="/image_to_3d"
+            api_name="/preprocess_image"
         )
         
         # Save GLB file
